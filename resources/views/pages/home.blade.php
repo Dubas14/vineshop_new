@@ -5,30 +5,10 @@
 @section('content')
 
     <div class="banners grid gap-4 mb-8">
-        @foreach($banners as $banner)
-            <a href="{{ $banner['link'] ?? '#' }}">
-                <img src="{{ asset('storage/' . $banner['image']) }}">
-            </a>
-        @endforeach
+        @include('partials.banner_slider')
     </div>
 
     @include('partials.banner')
-
-    {{-- 🏷 Категорії (плитки) --}}
-    <section class="py-10 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-2xl font-bold mb-6">Категорії</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                @foreach($categories as $category)
-                    <a href="{{ route('catalog', ['category' => $category->slug]) }}"
-                       class="block rounded overflow-hidden shadow hover:shadow-lg transition">
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
-                        <div class="p-3 text-center font-semibold">{{ $category->name }}</div>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </section>
 
     {{-- 🍷 Товари --}}
     <section class="py-10 bg-gray-50">
@@ -51,3 +31,5 @@
     </section>
 
 @endsection
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
