@@ -49,4 +49,14 @@ class CartController extends Controller
         session()->forget('cart');
         return redirect()->back()->with('success', 'Кошик очищено');
     }
+    public function update(Request $request, $id)
+    {
+        $quantity = max((int) $request->input('quantity', 1), 1);
+        $cart = session()->get('cart', []);
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+        }
+        return back();
+    }
 }
