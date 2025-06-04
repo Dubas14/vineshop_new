@@ -13,13 +13,17 @@ class OrderController extends Controller
     {
         $orders = Order::with('items')->latest()->get();
 
-        foreach ($orders as $order) {
-            $order->total_price = $order->items->sum(function ($item) {
-                return $item->price * $item->quantity;
-            });
-        }
-
-        return response()->json($orders);
+        return response()->json([
+            'data' => $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'name' => $order->name,
+                    'email' => $order->email,
+                    'status' => $order->status,
+                    'total_price' => $order->items->sum(fn($item) => $item->price * $item->quantity),
+                ];
+            }),
+        ]);
     }
 
     // Перегляд одного замовлення

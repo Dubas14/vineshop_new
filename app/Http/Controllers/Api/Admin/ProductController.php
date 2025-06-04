@@ -46,17 +46,26 @@ class ProductController extends Controller
         return $product;
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
+
         $data = $request->validate([
-            'name' => 'string|max:255',
-            'price' => 'numeric',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
             'description' => 'nullable|string',
-            'image' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|max:2048',
         ]);
 
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $data['image'] = $path;
+        }
+
         $product->update($data);
-        return $product;
+
+        return response()->json(['message' => 'Товар оновлено']);
     }
 
     public function destroy(Product $product)

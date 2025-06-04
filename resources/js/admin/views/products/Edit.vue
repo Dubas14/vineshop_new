@@ -91,25 +91,31 @@ const loadData = async () => {
 }
 
 const handleSubmit = async () => {
-    const formData = new FormData()
-    formData.append('_method', 'PUT')
-    formData.append('name', form.value.name)
-    formData.append('price', form.value.price)
-    formData.append('description', form.value.description || '')
-    formData.append('category_id', form.value.category_id)
+    try {
+        const formData = new FormData()
+        formData.append('_method', 'PUT')
+        formData.append('name', form.value.name)
+        formData.append('price', form.value.price)
+        formData.append('description', form.value.description || '')
+        formData.append('category_id', form.value.category_id)
 
-    if (imageFile.value) {
-        formData.append('image', imageFile.value)
-    }
-
-    await axios.post(`/api/admin/products/${route.params.id}`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
+        if (imageFile.value) {
+            formData.append('image', imageFile.value)
         }
-    })
 
-    alert('Зміни збережено')
-    router.push({ name: 'products' })
+        await axios.post(`/api/admin/products/${route.params.id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+
+        alert('Зміни збережено')
+        router.push({ name: 'products' })
+
+    } catch (error) {
+        console.error('Помилка при збереженні:', error)
+        alert('Помилка при збереженні. Перевірте поля та спробуйте ще раз.')
+    }
 }
 
 onMounted(loadData)

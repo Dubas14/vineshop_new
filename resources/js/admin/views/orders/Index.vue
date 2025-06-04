@@ -46,7 +46,7 @@ const orders = ref([])
 
 const fetchOrders = async () => {
     const response = await axios.get('/api/admin/orders')
-    orders.value = response.data.data
+    orders.value = response.data.data ?? response.data;
 }
 
 onMounted(fetchOrders)
