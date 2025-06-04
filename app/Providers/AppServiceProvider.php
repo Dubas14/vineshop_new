@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         app()->register(\App\Providers\RouteServiceProvider::class);
     }
 }
