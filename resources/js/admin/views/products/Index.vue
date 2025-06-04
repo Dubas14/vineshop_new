@@ -13,6 +13,7 @@
                 <th class="text-left p-2">Назва</th>
                 <th class="text-left p-2">Ціна</th>
                 <th class="text-left p-2">Дії</th>
+                <th class="text-left p-2">Фото</th>
             </tr>
             </thead>
             <tbody>
@@ -29,6 +30,15 @@
                     <button @click="deleteProduct(product.id)" class="text-red-600 hover:underline">
                         Видалити
                     </button>
+                </td>
+                <td class="p-2">
+                    <img
+                        v-if="product.image"
+                        :src="`/storage/${product.image}`"
+                        class="w-20 h-20 object-cover rounded shadow"
+                        alt="Зображення товару"
+                    >
+                    <span v-else class="text-gray-400 italic">немає</span>
                 </td>
             </tr>
             </tbody>

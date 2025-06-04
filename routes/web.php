@@ -10,6 +10,9 @@ use App\Http\Controllers\CartController;
 // --- Публічні сторінки користувача ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
+// Фільтр по категорії
+Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->name('catalog.byCategory');
+
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::view('/checkout', 'pages.checkout')->name('checkout');

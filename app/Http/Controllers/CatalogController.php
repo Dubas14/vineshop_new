@@ -11,24 +11,35 @@ class CatalogController extends Controller
     public function index(Request $request)
     {
         $query = Product::query();
+        $category = null;
 
-        // Фільтрація за категорією
+        // Фільтрація за slug
         if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+            $category = Category::where('slug', $request->category)->first();
+
+            if ($category) {
+                $query->where('category_id', $category->id);
+            } else {
+                // Якщо slug не знайдено — відобразити пустий результат
+                return view('pages.catalog', [
+                    'products' => collect(),
+                    'category' => null,
+                ]);
+            }
         }
 
-        // Сортування за ціною
-        if ($request->sort === 'price_asc') {
-            $query->orderBy('price');
-        } elseif ($request->sort === 'price_desc') {
-            $query->orderByDesc('price');
-        } else {
-            $query->latest(); // за замовчуванням — нові
-        }
+        $products = $query->latest()->paginate(12);
 
-        $products = $query->paginate(12);
-        $categories = Category::all();
+        return view('pages.catalog', [
+            'products' => $products,
+            'category' => $category,
+        ]);
+    }
+    public function byCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        $products = Product::where('category_id', $id)->latest()->paginate(12);
 
-        return view('pages.catalog', compact('products', 'categories'));
+        return view('pages.catalog', compact('products', 'category'));
     }
 }
