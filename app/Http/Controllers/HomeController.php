@@ -12,7 +12,9 @@ class HomeController extends Controller
     {
         $categories = Category::limit(4)->get();
         $products = Product::latest()->limit(8)->get();
-        $banners = Banner::where('active', true)->orderByDesc('created_at')->get();
+        $banners = Banner::where('is_active', true)
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('pages.home', compact('categories', 'products', 'banners'));
     }
