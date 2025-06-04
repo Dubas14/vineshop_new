@@ -1,0 +1,43 @@
+import { createRouter, createWebHistory } from 'vue-router';
+
+import Dashboard from '../views/Dashboard.vue';
+import Login from '../views/Login.vue';
+import Products from '../views/products/Index.vue';
+import Orders from '../views/orders/Index.vue';
+import Categories from '../views/categories/Index.vue';
+import Banners from '../views/banners/Index.vue';
+import CreateProduct from '../views/products/Create.vue';
+
+const routes = [
+    { path: '/admin/login', name: 'login', component: Login },
+    { path: '/admin/products', name: 'products', component: Products },
+    { path: '/admin/orders', name: 'orders', component: Orders },
+    { path: '/admin/categories', name: 'categories', component: Categories },
+    { path: '/admin/banners', name: 'banners', component: Banners },
+    { path: '/admin/products/create', name: 'product-create', component: CreateProduct },
+    {
+        path: '/admin/dashboard',
+        name: 'dashboard',
+        component: () => import('@/admin/components/Dashboard.vue'),
+    },
+    {
+        path: '/admin/products/:id/edit',
+        name: 'products.edit',
+        component: () => import('@/admin/views/products/Edit.vue'),
+    },
+    {
+        path: '/admin/banners/create',
+        name: 'banners.create',
+        component: () => import('../views/banners/Create.vue')
+    },
+];
+
+
+
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+export default router;
