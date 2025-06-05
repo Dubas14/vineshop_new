@@ -38,28 +38,7 @@
                 Загальна сума: {{ formatPrice(total) }}
             </div>
 
-            <form @submit.prevent="submitOrder" class="mt-8 space-y-4 bg-gray-100 p-6 rounded shadow max-w-md">
-                <h2 class="text-xl font-semibold mb-4">Оформлення замовлення</h2>
 
-                <div>
-                    <label for="name" class="block font-medium mb-1">Ваше імʼя</label>
-                    <input v-model="order.name" id="name" required class="w-full border px-3 py-2 rounded">
-                </div>
-
-                <div>
-                    <label for="phone" class="block font-medium mb-1">Телефон</label>
-                    <input v-model="order.phone" id="phone" required class="w-full border px-3 py-2 rounded">
-                </div>
-
-                <div>
-                    <label for="email" class="block font-medium mb-1">Email</label>
-                    <input v-model="order.email" id="email" type="email" class="w-full border px-3 py-2 rounded">
-                </div>
-
-                <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-                    Оформити замовлення
-                </button>
-            </form>
         </div>
 
         <div v-else>
@@ -108,20 +87,7 @@ const formatPrice = (value) => {
     return value.toFixed(2) + ' грн'
 }
 
-const submitOrder = async () => {
-    try {
-        await axios.post('/order', {
-            name: order.value.name,
-            phone: order.value.phone,
-            email: order.value.email
-        })
-        alert('Замовлення оформлено!')
-        router.push('/')
-    } catch (e) {
-        console.error(e)
-        alert('Помилка при оформленні замовлення.')
-    }
-}
+
 
 onMounted(fetchCart)
 </script>
