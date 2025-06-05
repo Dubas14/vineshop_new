@@ -16,7 +16,7 @@ Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product
 // --- Кошик (через SPA) ---
 
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::view('/cart', 'layouts.app')->name('cart');
+Route::view('/cart', 'pages.cart')->name('cart');
 
 // --- Оформлення замовлення (залишається Blade або SPA на вибір) ---
 Route::view('/checkout', 'pages.checkout')->name('checkout');
