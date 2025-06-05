@@ -29,43 +29,42 @@ class OrderController extends Controller
     // Перегляд одного замовлення
     public function show($id)
     {
-        $order = Order::with('items.product')->findOrFail($id);
+        $order = Order::with(['items.product'])->findOrFail($id); // 👈 Додай .product
 
-        $order->total_price = $order->items->sum(function ($item) {
+        $total = $order->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });
 
-        return response()->json($order);
+        return response()->json([
+            'id' => $order->id,
+            'name' => $order->name,
+            'email' => $order->email,
+            'status' => $order->status,
+            'items' => $order->items,
+            'total' => $total,
+        ]);
     }
 
     // Оновлення замовлення (наприклад, статус або кількість)
     public function update(Request $request, $id)
     {
-        $order = Order::with('items')->findOrFail($id);
-
-        $data = $request->validate([
-            'status' => 'required|string|max:255',
-            'items' => 'array',
-            'items.*.id' => 'exists:order_items,id',
-            'items.*.price' => 'numeric',
-            'items.*.quantity' => 'integer',
-        ]);
-
-        $order->status = $data['status'];
+        $order = Order::findOrFail($id);
+        $order->status = $request->input('status');
         $order->save();
 
-        // Якщо оновлюються окремі товари
-        if (isset($data['items'])) {
-            foreach ($data['items'] as $itemData) {
-                $item = $order->items->firstWhere('id', $itemData['id']);
-                if ($item) {
-                    $item->price = $itemData['price'];
-                    $item->quantity = $itemData['quantity'];
-                    $item->save();
+        if ($request->has('items')) {
+            foreach ($request->items as $item) {
+                $orderItem = $order->items()->where('id', $item['id'])->first();
+                if ($orderItem) {
+                    $orderItem->update([
+                        'quantity' => $item['quantity'],
+                        'price' => $item['price'],
+                        'discount' => $item['discount'] ?? 0,
+                    ]);
                 }
             }
         }
 
-        return response()->json(['message' => 'Замовлення оновлено']);
+        return response()->json(['message' => 'Оновлено']);
     }
 }
