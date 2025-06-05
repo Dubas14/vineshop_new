@@ -49,6 +49,7 @@ class CartController extends Controller
         session()->forget('cart');
         return redirect()->back()->with('success', 'Кошик очищено');
     }
+
     public function update(Request $request, $id)
     {
         $quantity = max((int) $request->input('quantity', 1), 1);
@@ -58,5 +59,27 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
         return back();
+    }
+
+    // === 🔥 API для Vue ===
+
+    // GET /api/cart
+    public function apiIndex()
+    {
+        return response()->json(session('cart', []));
+    }
+
+    // PUT /api/cart/update/{id}
+    public function apiUpdate(Request $request, $id)
+    {
+        $quantity = max((int) $request->input('quantity', 1), 1);
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+        }
+
+        return response()->json(['message' => 'Оновлено']);
     }
 }

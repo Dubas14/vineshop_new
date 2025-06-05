@@ -14,7 +14,7 @@ Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 
 // --- Кошик (через SPA) ---
-Route::view('/cart', 'layouts.app'); // SPA підключає Vue і рендерить <Cart.vue>
+
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::view('/cart', 'layouts.app')->name('cart');
 
