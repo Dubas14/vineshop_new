@@ -24,7 +24,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-6">
+            <div class="mt-6 w-full flex justify-center">
                 {{ $products->links() }}
             </div>
         @else

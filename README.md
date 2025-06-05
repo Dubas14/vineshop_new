@@ -2,7 +2,7 @@
 
 ## 🚀 Встановлення
 
-```bash
+```bash```
 git clone https://github.com/your-username/vineshop.git
 cd vineshop
 

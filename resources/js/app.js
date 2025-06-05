@@ -11,15 +11,18 @@ Alpine.start()
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
 
-// Якщо ти хочеш ініціалізувати слайдер (наприклад, на Cart.vue), можна зробити тут або у відповідному компоненті
-// document.addEventListener('DOMContentLoaded', () => {
-//     const swiper = new Swiper('.swiper', {
-//         // Налаштування слайдера
-//         loop: true,
-//         slidesPerView: 1,
-//         // ...
-//     });
-// });
+// Глобальна ініціалізація слайдера для банерів
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.mySwiperBanner')) {
+        new Swiper('.mySwiperBanner', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+            },
+            // ...інші налаштування
+        });
+    }
+});
 
 const el = document.getElementById('app');
 
