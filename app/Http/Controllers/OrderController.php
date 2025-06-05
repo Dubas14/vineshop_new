@@ -19,6 +19,9 @@ class OrderController extends Controller
         $cart = session('cart', []);
 
         if (empty($cart)) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Кошик порожній'], 422);
+            }
             return redirect()->back()->with('error', 'Кошик порожній');
         }
 
@@ -38,6 +41,10 @@ class OrderController extends Controller
         }
 
         session()->forget('cart');
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Замовлення успішно оформлено']);
+        }
 
         return redirect()->route('home')->with('success', 'Замовлення успішно оформлено!');
     }

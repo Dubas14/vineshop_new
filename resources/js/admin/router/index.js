@@ -30,6 +30,11 @@ const routes = [
         name: 'banners.create',
         component: () => import('../views/banners/Create.vue')
     },
+    {
+        path: '/cart',
+        name: 'cart',
+        component: () => import('@/admin/views/Cart.vue')
+    }
 ];
 
 

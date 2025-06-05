@@ -1,27 +1,25 @@
 <?php
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 // --- Публічні сторінки користувача ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
-// Фільтр по категорії
 Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->name('catalog.byCategory');
-
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
-Route::get('/cart', [CartController::class, 'index'])->name('cart');
-Route::view('/checkout', 'pages.checkout')->name('checkout');
 
-// --- Кошик і оформлення ---
+// --- Кошик (через SPA) ---
+Route::view('/cart', 'layouts.app'); // SPA підключає Vue і рендерить <Cart.vue>
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::view('/cart', 'layouts.app')->name('cart');
+
+// --- Оформлення замовлення (залишається Blade або SPA на вибір) ---
+Route::view('/checkout', 'pages.checkout')->name('checkout');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 // --- SPA-адмінка ---

@@ -5,7 +5,10 @@
 @section('content')
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-2xl font-bold mb-6">
-            Каталог @isset($category) — {{ $category->name }} @endisset
+            Каталог
+            @isset($category)
+                — {{ $category->name }}
+            @endisset
         </h1>
 
         @if($products->count())

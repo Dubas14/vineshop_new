@@ -12,12 +12,14 @@
                      x-transition
                      class="absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
                      @mouseenter="open = true" @mouseleave="open = false">
+
                     @foreach(\App\Models\Category::all() as $category)
                         <a href="{{ route('catalog', ['category' => $category->slug]) }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             {{ $category->name }}
                         </a>
                     @endforeach
+
                 </div>
             </div>
 
