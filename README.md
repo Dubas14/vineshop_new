@@ -18,3 +18,6 @@ npm run dev
 
 # Запуск
 php artisan serve
+
+# Додатково
+php artisan migrate --seed   # якщо потрібно створити таблиці й залити тестові дані

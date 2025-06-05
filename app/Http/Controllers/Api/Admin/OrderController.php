@@ -29,7 +29,7 @@ class OrderController extends Controller
     // Перегляд одного замовлення
     public function show($id)
     {
-        $order = Order::with(['items.product'])->findOrFail($id); // 👈 Додай .product
+        $order = Order::with(['items.product'])->findOrFail($id);
 
         $total = $order->items->sum(function ($item) {
             return $item->price * $item->quantity;

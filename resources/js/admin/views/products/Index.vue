@@ -54,7 +54,6 @@ const products = ref([])
 
 const fetchProducts = async () => {
     const response = await axios.get('/api/admin/products')
-    console.log('Products response:', response.data) // ⬅️ додай це
     products.value = response.data.data ?? response.data
 }
 

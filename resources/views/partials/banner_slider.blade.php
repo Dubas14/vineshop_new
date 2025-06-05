@@ -1,5 +1,4 @@
 {{-- resources/views/partials/banner_slider.blade.php --}}
-<link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css" />
 
 <div class="swiper mySwiper relative mb-8 rounded-lg overflow-hidden shadow max-w-[1100px] mx-auto">
     <div class="swiper-wrapper">

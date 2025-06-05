@@ -1,10 +1,11 @@
-import '../../css/app.css'; // ✅ Підключення TailwindCSS
+import '../../css/app.css' // ✅ Підключення TailwindCSS
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import axios from 'axios'
 import router from './router'
 import AdminApp from './AdminApp.vue'
+import { useAuthStore } from './stores/auth' // ← адаптуй шлях якщо треба
 
 const app = createApp(AdminApp)
 const pinia = createPinia()
@@ -17,9 +18,11 @@ if (token) {
 app.use(pinia)
 app.use(router)
 
+// Використовуй офіційний API Pinia для доступу до store
 router.beforeEach((to, from, next) => {
-    const auth = pinia._s.get('auth')
-    const isAuth = auth?.isAuthenticated ?? !!localStorage.getItem('token')
+    // ЩОБ працювало ПРАВИЛЬНО — викликай useAuthStore З pinia:
+    const auth = useAuthStore(pinia)
+    const isAuth = auth.isAuthenticated ?? !!localStorage.getItem('token')
 
     if (to.name !== 'login' && !isAuth) {
         next({ name: 'login' })
