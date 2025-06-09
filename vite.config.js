@@ -3,7 +3,6 @@ import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
-
     resolve: {
         alias: {
             vue: 'vue/dist/vue.esm-bundler.js',
@@ -20,4 +19,7 @@ export default defineConfig({
         }),
         vue(),
     ],
+    server: {
+        https: true
+    }
 });
