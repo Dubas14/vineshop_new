@@ -9,6 +9,9 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 
+if (env('APP_ENV') === 'production') {
+    URL::forceScheme('https');
+}
 
 
 // --- Публічні сторінки користувача ---
