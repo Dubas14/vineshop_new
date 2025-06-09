@@ -26,6 +26,15 @@
                 </div>
             </div>
 
+
+            <div>
+                <label class="block mb-1 font-medium">Додати фото в галерею</label>
+                <input type="file" multiple @change="handleGalleryChange" accept="image/*" class="w-full border px-3 py-2 rounded">
+                <div class="flex gap-2 mt-2">
+                    <img v-for="(img, i) in galleryPreviews" :key="i" :src="img" class="w-20 h-20 object-cover rounded" />
+                </div>
+            </div>
+
             <div>
                 <label class="block mb-1 font-medium">Категорія</label>
                 <select v-model="form.category_id" class="w-full border px-3 py-2 rounded" required>
@@ -59,6 +68,8 @@ const form = ref({
 
 const imageFile = ref(null)
 const imagePreview = ref(null)
+const galleryFiles = ref([])
+const galleryPreviews = ref([])
 
 const categories = ref([])
 
@@ -87,6 +98,15 @@ const handleImageChange = (e) => {
         imagePreview.value = objectURL
     }
 }
+const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files)
+    galleryFiles.value = []
+    galleryPreviews.value = []
+    files.forEach(file => {
+        galleryFiles.value.push(file)
+        galleryPreviews.value.push(URL.createObjectURL(file))
+    })
+}
 
 const handleSubmit = async () => {
     try {
@@ -98,6 +118,9 @@ const handleSubmit = async () => {
         if (imageFile.value) {
             formData.append('image', imageFile.value)
         }
+        galleryFiles.value.forEach(file => {
+            formData.append('images[]', file)
+        })
 
         await axios.post('/api/admin/products', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }

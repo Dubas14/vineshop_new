@@ -8,7 +8,9 @@ class ProductController extends Controller
 {
     public function show($slug)
     {
-        $product = Product::with('category')->where('slug', $slug)->firstOrFail();
+        $product = Product::with('category', 'images')
+            ->where('slug', $slug)
+            ->firstOrFail();
         return view('pages.product', compact('product'));
     }
 }

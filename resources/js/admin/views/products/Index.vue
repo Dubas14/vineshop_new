@@ -33,11 +33,14 @@
                 </td>
                 <td class="p-2">
                     <img
-                        v-if="product.image"
-                        :src="`/storage/${product.image}`"
+                        v-if="product.images && product.images.length"
+                        :src="`/storage/${product.images[0].path}`"
                         class="w-20 h-20 object-cover rounded shadow"
                         alt="Зображення товару"
                     >
+                    <span v-else-if="product.image" >
+                        <img :src="`/storage/${product.image}`" class="w-20 h-20 object-cover rounded shadow" alt="Фото">
+                    </span>
                     <span v-else class="text-gray-400 italic">немає</span>
                 </td>
             </tr>

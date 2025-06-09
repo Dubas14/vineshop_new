@@ -8,6 +8,7 @@
 <body class="font-sans antialiased text-gray-800">
 
 @include('partials.header')
+@include('partials.alerts')
 
 <main class="min-h-screen">
     @yield('content')

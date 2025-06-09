@@ -41,6 +41,17 @@
                 </div>
             </div>
 
+            <div>
+                <label class="block mb-1 font-medium">Галерея товару</label>
+                <div class="flex gap-2 mb-2" v-if="form.images && form.images.length">
+                    <img v-for="img in form.images" :key="img.id" :src="`/storage/${img.path}`" class="w-20 h-20 object-cover rounded" />
+                </div>
+                <input type="file" multiple @change="handleGalleryChange" accept="image/*" class="w-full border px-3 py-2 rounded">
+                <div class="flex gap-2 mt-2">
+                    <img v-for="(img, i) in galleryPreviews" :key="i" :src="img" class="w-20 h-20 object-cover rounded" />
+                </div>
+            </div>
+
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Зберегти зміни
             </button>
@@ -60,6 +71,8 @@ const imageFile = ref(null)
 const imagePreview = ref(null)
 const categories = ref([])
 const loaded = ref(false)
+const galleryFiles = ref([])
+const galleryPreviews = ref([])
 
 const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -79,6 +92,16 @@ const handleImageChange = (e) => {
         imagePreview.value = objectURL
     }
 }
+const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files)
+    galleryFiles.value = []
+    galleryPreviews.value = []
+    files.forEach(file => {
+        galleryFiles.value.push(file)
+        galleryPreviews.value.push(URL.createObjectURL(file))
+    })
+}
+
 
 const loadData = async () => {
     const productRes = await axios.get(`/api/admin/products/${route.params.id}`)
@@ -102,6 +125,9 @@ const handleSubmit = async () => {
         if (imageFile.value) {
             formData.append('image', imageFile.value)
         }
+        galleryFiles.value.forEach(file => {
+            formData.append('images[]', file)
+        })
 
         await axios.post(`/api/admin/products/${route.params.id}`, formData, {
             headers: {
