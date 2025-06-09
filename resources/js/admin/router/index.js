@@ -13,6 +13,11 @@ const routes = [
     { path: '/admin/orders', name: 'orders', component: Orders },
     { path: '/admin/categories', name: 'categories', component: Categories },
     { path: '/admin/banners', name: 'banners', component: Banners },
+    {
+        path: '/admin/banners/:id/edit',
+        name: 'banners.edit',
+        component: () => import('../views/banners/Edit.vue')
+    },
     { path: '/admin/products/create', name: 'product-create', component: CreateProduct },
     {
         path: '/admin/dashboard',
