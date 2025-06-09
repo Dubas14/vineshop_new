@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\URL;
 
 if (env('APP_ENV') === 'production') {
     URL::forceScheme('https');
