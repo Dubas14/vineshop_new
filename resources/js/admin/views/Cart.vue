@@ -72,9 +72,9 @@ const updateQuantity = async (id, quantity) => {
     await axios.put(`/api/cart/update/${id}`, { quantity })
 }
 
-const removeItem = (id) => {
+const removeItem = async (id) => {
+    await axios.delete('/api/cart/remove/' + id)
     delete cart.value[id]
-    // todo: API remove
 }
 
 const total = computed(() => {

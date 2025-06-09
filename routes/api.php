@@ -16,6 +16,7 @@ Route::get('/banners', [BannerController::class, 'public']);
 Route::middleware('web')->group(function () {
     Route::get('/cart', [CartController::class, 'apiIndex']);
     Route::put('/cart/update/{id}', [CartController::class, 'apiUpdate']);
+    Route::delete('/cart/remove/{id}', [CartController::class, 'apiRemove']);
 });
 
 

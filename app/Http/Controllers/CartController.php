@@ -83,4 +83,13 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Оновлено']);
     }
+    // DELETE /api/cart/remove/{id}
+    public function apiRemove($id)
+    {
+        $cart = session()->get('cart', []);
+        unset($cart[$id]);
+        session()->put('cart', $cart);
+
+        return response()->json(['message' => 'Видалено']);
+    }
 }
