@@ -24,7 +24,16 @@
             </div>
 
             <a href="{{ route('catalog') }}">Каталог</a>
-            <a href="{{ route('cart') }}">Кошик</a>
+            @php
+                $count = array_sum(array_column(session('cart', []), 'quantity'));
+            @endphp
+
+            <a href="{{ route('cart') }}">
+                Кошик
+                @if($count)
+                    ({{ $count }})
+                @endif
+            </a>
         </nav>
     </div>
 </header>

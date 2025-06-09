@@ -16,7 +16,8 @@
                 @foreach($products as $product)
                     <div class="border rounded p-4 shadow hover:shadow-md transition">
                         <a href="{{ route('product', $product->slug) }}">
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover mb-3">
+                            @php $preview = $product->images->first()->path ?? $product->image; @endphp
+                            <img src="{{ asset('storage/' . $preview) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover mb-3">
                             <h2 class="font-semibold text-lg">{{ $product->name }}</h2>
                             <p class="text-gray-600">{{ number_format($product->price, 2) }} грн</p>
                         </a>

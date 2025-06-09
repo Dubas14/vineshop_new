@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Str;
+use App\Models\ProductImage;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return Product::all();
+        return Product::with('images')->get();
     }
 
     public function store(Request $request)
@@ -24,7 +25,7 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // збереження зображення
+        // збереження головного зображення
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $data['image'] = $path;
@@ -43,7 +44,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return $product;
+        return $product->load('images');
     }
 
     public function update(Request $request, $id)
@@ -56,11 +57,14 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|max:2048',
+            'images.*' => 'image|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $img) {
+                $imgPath = $img->store('products', 'public');
+                $product->images()->create(['path' => $imgPath]);
+            }
         }
 
         $product->update($data);

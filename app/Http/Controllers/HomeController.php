@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::limit(4)->get();
-        $products = Product::latest()->limit(8)->get();
+        $products = Product::with('images')->latest()->limit(8)->get();
         $banners = Banner::where('is_active', true)
             ->orderByDesc('created_at')
             ->get();

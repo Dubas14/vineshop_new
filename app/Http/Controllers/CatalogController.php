@@ -10,7 +10,7 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::with('images');
         $category = null;
 
         // Фільтрація за slug
@@ -38,7 +38,10 @@ class CatalogController extends Controller
     public function byCategory($id)
     {
         $category = Category::findOrFail($id);
-        $products = Product::where('category_id', $id)->latest()->paginate(12);
+        $products = Product::with('images')
+            ->where('category_id', $id)
+            ->latest()
+            ->paginate(12);
 
         return view('pages.catalog', compact('products', 'category'));
     }
