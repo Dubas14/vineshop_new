@@ -1,7 +1,5 @@
 <?php
 
-
-
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -14,19 +12,17 @@ if (env('APP_ENV') === 'production') {
     URL::forceScheme('https');
 }
 
-
-// --- Публічні сторінки користувача ---
+// --- Публічні сторінки ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->name('catalog.byCategory');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 
-// --- Кошик (через SPA) ---
-
+// --- Кошик ---
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::view('/cart', 'pages.cart')->name('cart');
 
-// --- Оформлення замовлення (залишається Blade або SPA на вибір) ---
+// --- Замовлення ---
 Route::view('/checkout', 'pages.checkout')->name('checkout');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
@@ -38,8 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
 // --- SPA-адмінка ---
 Route::view('/admin/{any?}', 'layouts.admin_spa')->where('any', '.*');
 
+// Підключення маршрутів автентифікації
 require __DIR__.'/auth.php';
