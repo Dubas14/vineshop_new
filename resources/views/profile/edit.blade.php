@@ -17,6 +17,10 @@
                 <input id="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="border p-2 w-full">
             </div>
             <div class="mb-4">
+                <label class="block mb-1" for="phone">Телефон</label>
+                <input id="phone" name="phone" value="{{ old('phone', auth()->user()->phone) }}" class="border p-2 w-full">
+            </div>
+            <div class="mb-4">
                 <label class="block mb-1" for="password">Новий пароль</label>
                 <input id="password" name="password" type="password" class="border p-2 w-full">
             </div>

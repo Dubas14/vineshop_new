@@ -24,6 +24,8 @@
             </div>
 
             <a href="{{ route('catalog') }}">Каталог</a>
+            <a href="{{ route('about') }}">О нас</a>
+            <a href="{{ route('contacts') }}">Контакти</a>
             @php
                 $count = array_sum(array_column(session('cart', []), 'quantity'));
             @endphp

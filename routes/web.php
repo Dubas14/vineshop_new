@@ -19,6 +19,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->name('catalog.byCategory');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
+Route::view('/about', 'pages.about')->name('about');
+Route::view('/contacts', 'pages.contacts')->name('contacts');
 
 // --- Кошик ---
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
