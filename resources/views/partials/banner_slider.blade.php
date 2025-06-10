@@ -13,14 +13,3 @@
         @endforeach
     </div>
 </div>
-
-<script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
-<script>
-    new Swiper(".mySwiperBanner", {
-        loop: true,
-        autoplay: {
-            delay: 5000,
-        },
-        // без пагінації та стрілок!
-    });
-</script>
