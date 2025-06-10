@@ -6,7 +6,7 @@
             <a href="{{ route('home') }}">Головна</a>
 
             {{-- Категорії --}}
-            <div x-data="{ open: false }" class="relative" @mouseenter="open = true" @mouseleave="open = false">
+            <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
                 <button class="hover:underline focus:outline-none">Категорії</button>
                 <div x-show="open"
                      x-transition
@@ -39,7 +39,7 @@
                 <a href="{{ route('dashboard') }}" class="text-sm font-medium">Мій кабінет</a>
             @else
                 {{-- Обліковий запис --}}
-                <div x-data="{ open: false }" class="relative" @mouseenter="open = true" @mouseleave="open = false">
+                <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
                     <button class="text-sm font-medium focus:outline-none">
                         Обліковий запис
                     </button>

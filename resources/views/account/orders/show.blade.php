@@ -25,6 +25,13 @@
                 </tr>
             @endforeach
             </tbody>
+            <tfoot>
+            <tr class="font-semibold">
+                <td class="p-2 border text-left">Всього:</td>
+                <td class="p-2 border">{{ $order->items->sum('quantity') }}</td>
+                <td class="p-2 border">{{ $order->items->sum(fn($i) => $i->price * $i->quantity) }}</td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 @endsection

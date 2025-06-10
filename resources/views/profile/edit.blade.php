@@ -16,6 +16,14 @@
                 <label class="block mb-1" for="email">Email</label>
                 <input id="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="border p-2 w-full">
             </div>
+            <div class="mb-4">
+                <label class="block mb-1" for="password">Новий пароль</label>
+                <input id="password" name="password" type="password" class="border p-2 w-full">
+            </div>
+            <div class="mb-4">
+                <label class="block mb-1" for="password_confirmation">Підтвердити пароль</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" class="border p-2 w-full">
+            </div>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2">Зберегти</button>
         </form>
     </div>
