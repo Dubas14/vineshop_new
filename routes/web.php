@@ -30,5 +30,15 @@ Route::view('/cart', 'pages.cart')->name('cart');
 Route::view('/checkout', 'pages.checkout')->name('checkout');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
+// --- Кабінет користувача ---
+Route::middleware(['auth'])->group(function () {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
 // --- SPA-адмінка ---
 Route::view('/admin/{any?}', 'layouts.admin_spa')->where('any', '.*');
+
+require __DIR__.'/auth.php';

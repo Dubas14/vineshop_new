@@ -34,6 +34,12 @@
                     ({{ $count }})
                 @endif
             </a>
+
+            @auth
+                <a href="{{ route('dashboard') }}">Мій кабінет</a>
+            @else
+                <a href="{{ route('login') }}">Обліковий запис</a>
+            @endauth
         </nav>
     </div>
 </header>
