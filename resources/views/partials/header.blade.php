@@ -34,6 +34,24 @@
                     ({{ $count }})
                 @endif
             </a>
-        </nav>
+
+            @auth
+                <a href="{{ route('dashboard') }}" class="text-sm font-medium">Мій кабінет</a>
+            @else
+                {{-- Обліковий запис --}}
+                <div x-data="{ open: false }" class="relative" @mouseenter="open = true" @mouseleave="open = false">
+                    <button class="text-sm font-medium focus:outline-none">
+                        Обліковий запис
+                    </button>
+                    <div x-show="open"
+                         x-transition
+                         class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
+                         @mouseenter="open = true" @mouseleave="open = false">
+
+                        <a href="{{ route('login') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Увійти</a>
+                        <a href="{{ route('register') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Реєстрація</a>
+                    </div>
+                </div>
+        @endauth
     </div>
 </header>
