@@ -6,6 +6,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Order;
+use App\Models\Product;
 
 class User extends Authenticatable
 {
@@ -49,5 +51,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites');
     }
 }

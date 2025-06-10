@@ -30,6 +30,7 @@ class OrderController extends Controller
             'phone' => $data['phone'],
             'email' => $data['email'],
             'status' => 'Очікує підтвердження',
+            'user_id' => auth()->id(),
         ]);
 
         foreach ($cart as $productId => $item) {

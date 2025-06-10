@@ -18,10 +18,15 @@
             <p class="text-gray-700">Це ваш особистий кабінет.</p>
 
             <!-- Додатковий контент кабінету -->
-            <div class="mt-4">
+            <div class="mt-4 space-y-2">
                 <h2 class="text-xl font-semibold mb-2">Ваші дані:</h2>
                 <p><span class="font-medium">Email:</span> {{ auth()->user()->email }}</p>
                 <p><span class="font-medium">Дата реєстрації:</span> {{ auth()->user()->created_at->format('d.m.Y') }}</p>
+            </div>
+            <div class="mt-6 space-y-2">
+                <a href="{{ route('orders.index') }}" class="text-blue-600 hover:underline block">Мої замовлення</a>
+                <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline block">Редагувати профіль</a>
+                <a href="{{ route('favorites.index') }}" class="text-blue-600 hover:underline block">Улюблені товари</a>
             </div>
         </div>
     </div>

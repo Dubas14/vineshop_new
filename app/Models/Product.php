@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Product extends Model
 {
@@ -21,5 +22,9 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
     }
 }

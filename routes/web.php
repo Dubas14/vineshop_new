@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\URL;
 
 if (env('APP_ENV') === 'production') {
@@ -29,6 +31,11 @@ Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 // --- Кабінет користувача ---
 Route::middleware(['auth'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard/orders', [App\Http\Controllers\OrderHistoryController::class, 'index'])->name('orders.index');
+    Route::get('/dashboard/orders/{order}', [App\Http\Controllers\OrderHistoryController::class, 'show'])->name('orders.show');
+    Route::get('/dashboard/favorites', [App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/{product}', [App\Http\Controllers\FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{product}', [App\Http\Controllers\FavoriteController::class, 'destroy'])->name('favorites.destroy');
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
