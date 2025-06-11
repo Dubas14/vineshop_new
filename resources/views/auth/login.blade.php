@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Вхід')
+@section('title', __('messages.login_title'))
 
 @section('content')
     <div class="container mx-auto p-4 max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Вхід</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">@lang('messages.login_title')</h1>
 
         @if (session('status'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -29,21 +29,21 @@
                 <input id="email" name="email" type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('email') }}" required autofocus>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Пароль</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">@lang('messages.password')</label>
                 <input id="password" name="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
             <div class="mb-6">
                 <label class="inline-flex items-center">
                     <input type="checkbox" name="remember" class="form-checkbox">
-                    <span class="ml-2">Запам'ятати мене</span>
+                    <span class="ml-2">@lang('messages.remember_me')</span>
                 </label>
             </div>
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Увійти
+                    @lang('messages.login_button')
                 </button>
                 <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="{{ route('password.request') }}">
-                    Забули пароль?
+                    @lang('messages.forgot_password')
                 </a>
             </div>
         </form>

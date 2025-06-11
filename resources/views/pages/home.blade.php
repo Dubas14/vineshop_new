@@ -10,7 +10,7 @@
 
     @include('partials.banner')
 
-    {{-- 🍷 Товари --}}
+    {{-- 🍷 Products --}}
     <section class="py-10 bg-gray-50">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl font-bold mb-6">@lang('messages.top_products')</h2>

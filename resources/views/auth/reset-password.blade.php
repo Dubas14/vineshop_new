@@ -1,6 +1,6 @@
 @section('content')
     <div class="container mx-auto p-4 max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Встановити новий пароль</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">@lang('messages.set_new_password_title')</h1>
 
         <form method="POST" action="{{ route('password.update') }}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             @csrf
@@ -12,18 +12,18 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Новий пароль</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">@lang('messages.new_password')</label>
                 <input id="password" name="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
 
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">Підтвердіть пароль</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">@lang('messages.confirm_password')</label>
                 <input id="password_confirmation" name="password_confirmation" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
 
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Змінити пароль
+                    @lang('messages.change_password')
                 </button>
             </div>
         </form>

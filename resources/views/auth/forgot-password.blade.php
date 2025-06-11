@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Забули пароль')
+@section('title', __('messages.forgot_password_title'))
 
 @section('content')
     <div class="container mx-auto p-4 max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Скинути пароль</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">@lang('messages.reset_password_title')</h1>
 
         @if (session('status'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -20,7 +20,7 @@
             </div>
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Надіслати посилання
+                    @lang('messages.send_link')
                 </button>
             </div>
         </form>

@@ -5,7 +5,7 @@
         <nav class="flex space-x-4 items-center">
             <a href="{{ route('home') }}">@lang('messages.home')</a>
 
-            {{-- Категорії --}}
+            {{-- Categories --}}
             <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
                 <button class="hover:underline focus:outline-none">@lang('messages.categories')</button>
                 <div x-show="open"
@@ -38,9 +38,9 @@
             </a>
 
             @auth
-                <a href="{{ route('dashboard') }}" class="text-sm font-medium">Мій кабінет</a>
+                <a href="{{ route('dashboard') }}" class="text-sm font-medium">{{ __('messages.dashboard_title') }}</a>
             @else
-                {{-- Обліковий запис --}}
+                {{-- Account --}}
                 <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
                     <button class="text-sm font-medium focus:outline-none">
                         @lang('messages.account')

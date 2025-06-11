@@ -29,7 +29,7 @@
                 {{ $products->links() }}
             </div>
         @else
-            <p>Немає доступних товарів.</p>
+            <p>{{ __('messages.no_products') }}</p>
         @endif
     </div>
 @endsection

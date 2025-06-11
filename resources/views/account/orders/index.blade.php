@@ -1,20 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Мої замовлення')
+@section('title', __('messages.my_orders'))
 
 @section('content')
     <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Мої замовлення</h1>
+        <h1 class="text-2xl font-bold mb-4">@lang('messages.my_orders')</h1>
         <ul class="space-y-2">
             @forelse($orders as $order)
                 <li class="border p-4 rounded">
                     <a href="{{ route('orders.show', $order) }}" class="font-semibold">
-                        Замовлення #{{ $order->id }} від {{ $order->created_at->format('d.m.Y') }}
+                        {{ __('messages.order_number_date', ['id' => $order->id, 'date' => $order->created_at->format('d.m.Y')]) }}
                     </a>
-                    <p>Статус: {{ $order->status }}</p>
+                    <p>@lang('messages.status') {{ $order->status }}</p>
                 </li>
             @empty
-                <li>У вас немає замовлень.</li>
+                <li>@lang('messages.no_orders')</li>
             @endforelse
         </ul>
     </div>
