@@ -55,9 +55,9 @@
                     </div>
                 </div>
         @endauth
-            <div class="flex space-x-1 ml-4">
-                <a href="{{ route('lang.switch', 'uk') }}" class="text-sm {{ app()->getLocale() == 'uk' ? 'font-bold' : '' }}">UA</a>
-                <a href="{{ route('lang.switch', 'en') }}" class="text-sm {{ app()->getLocale() == 'en' ? 'font-bold' : '' }}">EN</a>
+            <div class="flex space-x-1 ml-4" x-data>
+                <a href="{{ route('lang.switch', 'uk') }}" @click="localStorage.setItem('locale','uk')" class="text-sm {{ app()->getLocale() == 'uk' ? 'font-bold' : '' }}">UA</a>
+                <a href="{{ route('lang.switch', 'en') }}" @click="localStorage.setItem('locale','en')" class="text-sm {{ app()->getLocale() == 'en' ? 'font-bold' : '' }}">EN</a>
             </div>
         </nav>
     </div>
