@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Головна')
+@section('title', __('messages.home'))
 
 @section('content')
 
@@ -13,7 +13,7 @@
     {{-- 🍷 Товари --}}
     <section class="py-10 bg-gray-50">
         <div class="container mx-auto px-4">
-            <h2 class="text-2xl font-bold mb-6">Топ товари</h2>
+            <h2 class="text-2xl font-bold mb-6">@lang('messages.top_products')</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 @foreach($products as $product)
                     <a href="{{ route('product', $product->slug) }}"

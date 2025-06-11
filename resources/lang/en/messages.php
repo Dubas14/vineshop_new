@@ -1,0 +1,22 @@
+<?php
+return [
+    'home' => 'Home',
+    'categories' => 'Categories',
+    'catalog' => 'Catalog',
+    'about' => 'About',
+    'contacts' => 'Contacts',
+    'cart' => 'Cart',
+    'account' => 'Account',
+    'login' => 'Login',
+    'register' => 'Register',
+    'top_products' => 'Top products',
+    'checkout_proceed' => 'Proceed to checkout',
+    'checkout_title' => 'Checkout',
+    'name' => 'Name',
+    'phone' => 'Phone',
+    'email' => 'Email',
+    'place_order' => 'Place order',
+    'banner_title' => 'Best wines from around the world',
+    'banner_subtitle' => 'Order online with delivery',
+    'banner_button' => 'Go to catalog',
+];

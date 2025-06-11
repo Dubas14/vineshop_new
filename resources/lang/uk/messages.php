@@ -1,0 +1,22 @@
+<?php
+return [
+    'home' => 'Головна',
+    'categories' => 'Категорії',
+    'catalog' => 'Каталог',
+    'about' => 'Про нас',
+    'contacts' => 'Контакти',
+    'cart' => 'Кошик',
+    'account' => 'Обліковий запис',
+    'login' => 'Увійти',
+    'register' => 'Реєстрація',
+    'top_products' => 'Топ товари',
+    'checkout_proceed' => 'Перейти до оформлення',
+    'checkout_title' => 'Оформлення замовлення',
+    'name' => 'Ваше імʼя',
+    'phone' => 'Телефон',
+    'email' => 'Email',
+    'place_order' => 'Оформити замовлення',
+    'banner_title' => 'Найкращі вина з усього світу',
+    'banner_subtitle' => 'Замовляй онлайн з доставкою',
+    'banner_button' => 'Перейти в каталог',
+];

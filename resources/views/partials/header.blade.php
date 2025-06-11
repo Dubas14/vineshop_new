@@ -3,11 +3,11 @@
         <a href="{{ route('home') }}" class="text-xl font-bold">Vineshop</a>
 
         <nav class="flex space-x-4 items-center">
-            <a href="{{ route('home') }}">Головна</a>
+            <a href="{{ route('home') }}">@lang('messages.home')</a>
 
             {{-- Категорії --}}
             <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
-                <button class="hover:underline focus:outline-none">Категорії</button>
+                <button class="hover:underline focus:outline-none">@lang('messages.categories')</button>
                 <div x-show="open"
                      x-transition
                      class="absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
@@ -23,15 +23,15 @@
                 </div>
             </div>
 
-            <a href="{{ route('catalog') }}">Каталог</a>
-            <a href="{{ route('about') }}">О нас</a>
-            <a href="{{ route('contacts') }}">Контакти</a>
+            <a href="{{ route('catalog') }}">@lang('messages.catalog')</a>
+            <a href="{{ route('about') }}">@lang('messages.about')</a>
+            <a href="{{ route('contacts') }}">@lang('messages.contacts')</a>
             @php
                 $count = array_sum(array_column(session('cart', []), 'quantity'));
             @endphp
 
             <a href="{{ route('cart') }}">
-                Кошик
+                @lang('messages.cart')
                 @if($count)
                     ({{ $count }})
                 @endif
@@ -43,18 +43,22 @@
                 {{-- Обліковий запис --}}
                 <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
                     <button class="text-sm font-medium focus:outline-none">
-                        Обліковий запис
+                        @lang('messages.account')
                     </button>
                     <div x-show="open"
                          x-transition
                          class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
                          @mouseenter="open = true" @mouseleave="open = false">
 
-                        <a href="{{ route('login') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Увійти</a>
-                        <a href="{{ route('register') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Реєстрація</a>
+                        <a href="{{ route('login') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">@lang('messages.login')</a>
+                        <a href="{{ route('register') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">@lang('messages.register')</a>
                     </div>
                 </div>
         @endauth
+            <div class="flex space-x-1 ml-4">
+                <a href="{{ route('lang.switch', 'uk') }}" class="text-sm {{ app()->getLocale() == 'uk' ? 'font-bold' : '' }}">UA</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="text-sm {{ app()->getLocale() == 'en' ? 'font-bold' : '' }}">EN</a>
+            </div>
         </nav>
     </div>
 </header>

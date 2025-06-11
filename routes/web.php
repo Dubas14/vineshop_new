@@ -21,6 +21,13 @@ Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/contacts', 'pages.contacts')->name('contacts');
+Route::get('/lang/{locale}', function ($locale) {
+    if (!in_array($locale, ['en', 'uk'])) {
+        $locale = config('app.locale');
+    }
+    session(['locale' => $locale]);
+    return back();
+})->name('lang.switch');
 
 // --- Кошик ---
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');

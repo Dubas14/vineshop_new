@@ -1,0 +1,13 @@
+{
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "categories": "Categories",
+    "banners": "Banners",
+    "logout": "Logout",
+    "admin_login": "Admin Login",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "login_error": "Invalid credentials"
+}

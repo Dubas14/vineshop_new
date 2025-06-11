@@ -1,0 +1,13 @@
+{
+    "dashboard": "Дашборд",
+    "products": "Товари",
+    "orders": "Замовлення",
+    "categories": "Категорії",
+    "banners": "Банери",
+    "logout": "Вийти",
+    "admin_login": "Вхід адміністратора",
+    "email": "Email",
+    "password": "Пароль",
+    "login": "Увійти",
+    "login_error": "Невірні дані для входу"
+}

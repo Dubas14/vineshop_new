@@ -16,6 +16,11 @@ php artisan migrate --seed
 npm install
 npm run dev
 
+# Translation
+Create translation files in resources/lang and resources/js/admin/lang.
+After updating translations run:
+npm run build
+
 # Запуск
 php artisan serve
 
