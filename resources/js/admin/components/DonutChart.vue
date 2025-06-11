@@ -7,14 +7,17 @@
 <script setup>
 import { Doughnut } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
 const chartData = {
-    labels: ['Червоне', 'Біле', 'Рожеве', 'Ігристе', 'Десертне'],
+    labels: [t('red'), t('white'), t('rose'), t('sparkling'), t('dessert')],
     datasets: [
         {
-            label: 'Категорії вин',
+            label: t('wine_categories'),
             data: [35, 25, 15, 15, 10],
             backgroundColor: [
                 '#ef4444',

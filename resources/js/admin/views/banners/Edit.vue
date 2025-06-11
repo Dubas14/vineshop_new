@@ -1,52 +1,52 @@
 <template>
     <div class="p-4 max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold mb-4">Редагувати банер</h1>
+        <h1 class="text-2xl font-bold mb-4">{{ $t('edit') }} {{ $t('banners') }}</h1>
 
         <form @submit.prevent="handleSubmit" class="space-y-4" v-if="loaded">
             <div>
-                <label class="block font-medium mb-1">Заголовок</label>
+                <label class="block font-medium mb-1">{{ $t('title') }}</label>
                 <input v-model="form.title" type="text" class="w-full border px-3 py-2 rounded" required />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Підзаголовок</label>
+                <label class="block font-medium mb-1">{{ $t('subtitle') }}</label>
                 <input v-model="form.subtitle" type="text" class="w-full border px-3 py-2 rounded" />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Тип посилання</label>
+                <label class="block font-medium mb-1">{{ $t('link_type') }}</label>
                 <select v-model="form.link_type" class="w-full border px-3 py-2 rounded" required>
-                    <option value="">Оберіть тип</option>
-                    <option value="product">Товар</option>
-                    <option value="category">Категорія</option>
-                    <option value="custom">Свій URL</option>
+                    <option value="">{{ $t('choose_type') }}</option>
+                    <option value="product">{{ $t('product') }}</option>
+                    <option value="category">{{ $t('category') }}</option>
+                    <option value="custom">{{ $t('custom_url') }}</option>
                 </select>
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Ціль посилання</label>
+                <label class="block font-medium mb-1">{{ $t('link_target') }}</label>
                 <input v-model="form.link_target" type="text" class="w-full border px-3 py-2 rounded" required />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Текст кнопки</label>
+                <label class="block font-medium mb-1">{{ $t('button_text') }}</label>
                 <input v-model="form.button_text" type="text" class="w-full border px-3 py-2 rounded" />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Активний</label>
+                <label class="block font-medium mb-1">{{ $t('is_active') }}</label>
                 <input type="checkbox" v-model="form.is_active" />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Поточне зображення</label>
+                <label class="block font-medium mb-1">{{ $t('current_image') }}</label>
                 <img :src="`/storage/${form.image}`" class="max-w-full border rounded shadow" v-if="form.image" />
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Замінити зображення</label>
+                <label class="block font-medium mb-1">{{ $t('replace_image') }}</label>
                 <input type="file" accept="image/*" @change="handleImageChange" class="w-full border px-3 py-2 rounded" />
-                <p class="text-sm text-gray-500">Макс: 1100px по ширині, 300px по висоті</p>
+                <p class="text-sm text-gray-500">{{ $t('max_dimensions') }}</p>
 
                 <div v-if="imagePreview" class="mt-2">
                     <img :src="imagePreview" class="max-w-full border rounded shadow" />
@@ -54,7 +54,7 @@
             </div>
 
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Зберегти зміни
+                {{ $t('save_changes') }}
             </button>
         </form>
     </div>
@@ -64,6 +64,9 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -79,7 +82,7 @@ const loadBanner = async () => {
         form.value = response.data
         loaded.value = true
     } catch (error) {
-        alert('Не вдалося завантажити банер')
+        alert(t('banner_load_error'))
         console.error(error)
     }
 }
@@ -94,7 +97,7 @@ const handleImageChange = (e) => {
 
     img.onload = () => {
         if (img.width > 1100 || img.height > 300) {
-            alert('Зображення має бути не більше 1100px в ширину та 300px у висоту')
+            alert(t('image_size_error'))
             return
         }
 
@@ -121,10 +124,10 @@ const handleSubmit = async () => {
                 'Content-Type': 'multipart/form-data',
             }
         })
-        alert('Банер оновлено')
+        alert(t('banner_updated'))
         router.push({ name: 'banners' })
     } catch (e) {
-        alert('Помилка при оновленні банера')
+        alert(t('banner_update_error'))
         console.error(e)
     }
 }

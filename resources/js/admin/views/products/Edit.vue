@@ -1,27 +1,27 @@
 <template>
     <div class="p-4 max-w-xl mx-auto">
-        <h1 class="text-2xl font-bold mb-4">Редагування товару</h1>
+        <h1 class="text-2xl font-bold mb-4">{{ $t('edit') }} {{ $t('products') }}</h1>
 
         <form @submit.prevent="handleSubmit" class="space-y-4" v-if="loaded">
             <div>
-                <label class="block mb-1 font-medium">Назва</label>
+                <label class="block mb-1 font-medium">{{ $t('name') }}</label>
                 <input v-model="form.name" type="text" class="w-full border px-3 py-2 rounded" required>
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Ціна</label>
+                <label class="block mb-1 font-medium">{{ $t('price') }}</label>
                 <input v-model="form.price" type="number" class="w-full border px-3 py-2 rounded" required>
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Опис</label>
+                <label class="block mb-1 font-medium">{{ $t('description') }}</label>
                 <textarea v-model="form.description" class="w-full border px-3 py-2 rounded"></textarea>
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Категорія</label>
+                <label class="block mb-1 font-medium">{{ $t('category') }}</label>
                 <select v-model="form.category_id" class="w-full border px-3 py-2 rounded" required>
-                    <option value="" disabled>Оберіть категорію</option>
+                    <option value="" disabled>{{ $t('choose_type') }}</option>
                     <option v-for="category in categories" :key="category.id" :value="category.id">
                         {{ category.name }}
                     </option>
@@ -29,12 +29,12 @@
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Поточне зображення</label>
+                <label class="block mb-1 font-medium">{{ $t('current_image') }}</label>
                 <img v-if="form.image" :src="`/storage/${form.image}`" class="max-w-xs rounded shadow" />
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Завантажити нове зображення</label>
+                <label class="block mb-1 font-medium">{{ $t('upload_image') }}</label>
                 <input type="file" @change="handleImageChange" accept="image/*" class="w-full border px-3 py-2 rounded">
                 <div v-if="imagePreview" class="mt-2">
                     <img :src="imagePreview" class="max-w-xs border rounded" />
@@ -42,7 +42,7 @@
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Галерея товару</label>
+                <label class="block mb-1 font-medium">{{ $t('add_gallery') }}</label>
                 <div class="flex gap-2 mb-2" v-if="form.images && form.images.length">
                     <img v-for="img in form.images" :key="img.id" :src="`/storage/${img.path}`" class="w-20 h-20 object-cover rounded" />
                 </div>
@@ -53,7 +53,7 @@
             </div>
 
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Зберегти зміни
+                {{ $t('save_changes') }}
             </button>
         </form>
     </div>
@@ -63,6 +63,9 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -84,7 +87,7 @@ const handleImageChange = (e) => {
 
     img.onload = () => {
         if (img.width > 600 || img.height > 600) {
-            alert('Зображення має бути не більше 600 пікселів по ширині або висоті.')
+            alert(t('image_size_error'))
             return
         }
 
@@ -135,12 +138,12 @@ const handleSubmit = async () => {
             }
         })
 
-        alert('Зміни збережено')
+        alert(t('product_updated'))
         router.push({ name: 'products' })
 
     } catch (error) {
         console.error('Помилка при збереженні:', error)
-        alert('Помилка при збереженні. Перевірте поля та спробуйте ще раз.')
+        alert(t('product_update_error'))
     }
 }
 

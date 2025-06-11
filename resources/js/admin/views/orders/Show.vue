@@ -1,17 +1,17 @@
 <template>
     <div class="p-4">
-        <h1 class="text-2xl font-bold mb-4">Деталі замовлення #{{ order.id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">{{ $t('order_details') }} #{{ order.id }}</h1>
 
         <div class="mb-6 space-y-1">
-            <p><strong>Імʼя:</strong> {{ order.name }}</p>
-            <p><strong>Email:</strong> {{ order.email }}</p>
-            <p><strong>Сума:</strong> {{ totalSum }} грн</p>
+            <p><strong>{{ $t('name') }}:</strong> {{ order.name }}</p>
+            <p><strong>{{ $t('email') }}:</strong> {{ order.email }}</p>
+            <p><strong>{{ $t('sum') }}:</strong> {{ totalSum }} грн</p>
             <p>
-                <strong>Статус:</strong>
+                <strong>{{ $t('status') }}:</strong>
                 <select v-model="order.status" class="border rounded px-2 py-1 ml-2">
-                    <option value="Очікує підтвердження">Очікує підтвердження</option>
-                    <option value="Підтверджено">Підтверджено</option>
-                    <option value="Скасовано">Скасовано</option>
+                    <option value="Очікує підтвердження">{{ $t('pending') }}</option>
+                    <option value="Підтверджено">{{ $t('completed') }}</option>
+                    <option value="Скасовано">{{ $t('cancelled') }}</option>
                 </select>
             </p>
         </div>
@@ -20,19 +20,19 @@
             @click="updateOrder"
             class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-6"
         >
-            Зберегти зміни
+            {{ $t('save_changes') }}
         </button>
 
-        <h2 class="text-xl font-semibold mb-2">Товари</h2>
+        <h2 class="text-xl font-semibold mb-2">{{ $t('items') }}</h2>
         <table class="min-w-full bg-white shadow rounded">
             <thead>
             <tr class="border-b bg-gray-100">
-                <th class="p-2 text-left">Назва</th>
-                <th class="p-2 text-left">Кількість</th>
-                <th class="p-2 text-left">Ціна</th>
-                <th class="p-2 text-left">Знижка (%)</th>
-                <th class="p-2 text-left">Сума</th>
-                <th class="p-2 text-left">Дії</th>
+                <th class="p-2 text-left">{{ $t('name') }}</th>
+                <th class="p-2 text-left">{{ $t('quantity') }}</th>
+                <th class="p-2 text-left">{{ $t('price') }}</th>
+                <th class="p-2 text-left">{{ $t('discount') }}</th>
+                <th class="p-2 text-left">{{ $t('sum') }}</th>
+                <th class="p-2 text-left">{{ $t('actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
                     {{ itemTotal(item) }} грн
                 </td>
                 <td class="p-2">
-                    <button @click="removeItem(index)" class="text-red-600 hover:underline">Видалити</button>
+                    <button @click="removeItem(index)" class="text-red-600 hover:underline">{{ $t('remove') }}</button>
                 </td>
             </tr>
             </tbody>
@@ -63,6 +63,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -92,7 +95,7 @@ const updateOrder = async () => {
         status: order.value.status,
         items: order.value.items,
     })
-    alert('Зміни збережено')
+    alert(t('save_success'))
     router.push('/admin/orders')
 }
 
