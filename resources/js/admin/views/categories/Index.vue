@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>Categories</h1>
-        <p>Це сторінка керування категоріями.</p>
+        <h1>{{ $t('categories_page_title') }}</h1>
+        <p>{{ $t('categories_page_description') }}</p>
     </div>
 </template>
 

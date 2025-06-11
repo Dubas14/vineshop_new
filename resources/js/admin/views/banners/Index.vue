@@ -1,25 +1,25 @@
 <template>
     <div class="p-4">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-bold">Банери</h1>
+            <h1 class="text-2xl font-bold">{{ $t('banners') }}</h1>
             <router-link
                 to="/admin/banners/create"
                 class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-                Додати банер
+                {{ $t('add_banner') }}
             </router-link>
         </div>
 
         <table class="min-w-full bg-white shadow rounded">
             <thead>
             <tr class="border-b bg-gray-100">
-                <th class="text-left p-2">ID</th>
-                <th class="text-left p-2">Заголовок</th>
-                <th class="text-left p-2">Зображення</th>
-                <th class="text-left p-2">Тип</th>
-                <th class="text-left p-2">Ціль</th>
-                <th class="text-left p-2">Активний</th>
-                <th class="text-left p-2">Дії</th>
+                <th class="text-left p-2">{{ $t('id') }}</th>
+                <th class="text-left p-2">{{ $t('title') }}</th>
+                <th class="text-left p-2">{{ $t('image') }}</th>
+                <th class="text-left p-2">{{ $t('type') }}</th>
+                <th class="text-left p-2">{{ $t('target') }}</th>
+                <th class="text-left p-2">{{ $t('active') }}</th>
+                <th class="text-left p-2">{{ $t('actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -46,7 +46,7 @@
                                 'text-red-600': !banner.is_active,
                             }"
                         >
-                            {{ banner.is_active ? 'Так' : 'Ні' }}
+                            {{ banner.is_active ? $t('yes') : $t('no') }}
                         </span>
                 </td>
                 <td class="p-2 space-x-2">
@@ -54,13 +54,13 @@
                         :to="`/admin/banners/${banner.id}/edit`"
                         class="text-blue-600 hover:underline"
                     >
-                        Редагувати
+                        {{ $t('edit') }}
                     </router-link>
                     <button
                         @click="deleteBanner(banner.id)"
                         class="text-red-600 hover:underline"
                     >
-                        Видалити
+                        {{ $t('delete') }}
                     </button>
                 </td>
             </tr>
@@ -72,6 +72,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const banners = ref([])
 
@@ -81,7 +84,7 @@ const fetchBanners = async () => {
 }
 
 const deleteBanner = async (id) => {
-    if (confirm('Видалити банер?')) {
+    if (confirm(t('delete_banner_confirm'))) {
         await axios.delete(`/api/admin/banners/${id}`)
         await fetchBanners()
     }

@@ -1,16 +1,16 @@
 <template>
     <div class="p-4">
-        <h1 class="text-2xl font-bold mb-4">Замовлення</h1>
+        <h1 class="text-2xl font-bold mb-4">{{ $t('orders_list') }}</h1>
 
         <table class="min-w-full bg-white shadow rounded">
             <thead>
             <tr class="border-b">
-                <th class="text-left p-2">ID</th>
-                <th class="text-left p-2">Імʼя</th>
-                <th class="text-left p-2">Email</th>
-                <th class="text-left p-2">Сума</th>
-                <th class="text-left p-2">Статус</th>
-                <th class="text-left p-2">Дії</th>
+                <th class="text-left p-2">{{ $t('id') }}</th>
+                <th class="text-left p-2">{{ $t('name') }}</th>
+                <th class="text-left p-2">{{ $t('email') }}</th>
+                <th class="text-left p-2">{{ $t('sum') }}</th>
+                <th class="text-left p-2">{{ $t('status') }}</th>
+                <th class="text-left p-2">{{ $t('actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -29,7 +29,7 @@
                         :to="`/admin/orders/${order.id}`"
                         class="text-blue-600 hover:underline"
                     >
-                        Переглянути
+                        {{ $t('view') }}
                     </router-link>
                 </td>
             </tr>
