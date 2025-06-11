@@ -1,16 +1,16 @@
 <template>
     <div class="p-4 max-w-5xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">{{ $t('your_cart') }}</h1>
+        <h1 class="text-2xl font-bold mb-6">{{ t('your_cart') }}</h1>
 
         <div v-if="Object.keys(cart).length">
             <table class="min-w-full bg-white shadow rounded">
                 <thead>
                 <tr class="border-b">
-                    <th class="p-2 text-left">{{ $t('name') }}</th>
-                    <th class="p-2 text-left">{{ $t('price') }}</th>
-                    <th class="p-2 text-left">{{ $t('quantity') }}</th>
-                    <th class="p-2 text-left">{{ $t('sum') }}</th>
-                    <th class="p-2 text-left">{{ $t('actions') }}</th>
+                    <th class="p-2 text-left">{{ t('name') }}</th>
+                    <th class="p-2 text-left">{{ t('price') }}</th>
+                    <th class="p-2 text-left">{{ t('quantity') }}</th>
+                    <th class="p-2 text-left">{{ t('sum') }}</th>
+                    <th class="p-2 text-left">{{ t('actions') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,7 +27,7 @@
                     <td class="p-2">{{ formatPrice(item.price * item.quantity) }}</td>
                     <td class="p-2">
                         <button @click="removeItem(id)" class="text-red-600 hover:underline">
-                            {{ $t('remove') }}
+                            {{ t('remove') }}
                         </button>
                     </td>
                 </tr>
@@ -35,29 +35,24 @@
             </table>
 
             <div class="mt-4 font-semibold">
-                {{ $t('total_amount') }}: {{ formatPrice(total) }}
+                {{ t('total_amount') }}: {{ formatPrice(total) }}
             </div>
-
-
         </div>
 
         <div v-else>
-            <p>{{ $t('cart_empty') }}</p>
+            <p>{{ t('cart_empty') }}</p>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 
-const cart = ref({})
+const { t } = useI18n()
 
-const order = ref({
-    name: '',
-    phone: '',
-    email: ''
-})
+const cart = ref({})
 
 const fetchCart = async () => {
     const response = await axios.get('/api/cart')
@@ -84,8 +79,6 @@ const total = computed(() => {
 const formatPrice = (value) => {
     return value.toFixed(2) + ' грн'
 }
-
-
 
 onMounted(fetchCart)
 </script>
