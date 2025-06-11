@@ -22,6 +22,7 @@ class RegisteredUserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['nullable', 'string'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'phone' => ['nullable', 'string'],
         ]);
