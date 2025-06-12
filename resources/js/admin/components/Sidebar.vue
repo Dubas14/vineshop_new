@@ -19,7 +19,7 @@ const logout = async () => {
 const changeLang = (lang) => {
     locale.value = lang
     localStorage.setItem('locale', lang)
-    window.location.href = `/lang/${lang}`
+    location.reload()
 }
 </script>
 

@@ -1,21 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <script>
-        const sessionLocale = '{{ app()->getLocale() }}'
-        const storedLocale = localStorage.getItem('locale')
-
-        if (
-            storedLocale &&
-            storedLocale !== sessionLocale &&
-            !window.location.pathname.startsWith('/lang/')
-        ) {
-            window.location.href = `/lang/${storedLocale}`
-        } else if (!storedLocale) {
-            localStorage.setItem('locale', sessionLocale)
+        let storedLocale = localStorage.getItem('locale');
+        if (!storedLocale) {
+            storedLocale = 'uk';
+            localStorage.setItem('locale', storedLocale);
         }
+        document.documentElement.lang = storedLocale;
     </script>
     @vite('resources/js/admin/main.js')
 </head>

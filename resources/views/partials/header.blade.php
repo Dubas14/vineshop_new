@@ -56,8 +56,8 @@
                 </div>
         @endauth
             <div class="flex space-x-1 ml-4" x-data>
-                <a href="{{ route('lang.switch', 'uk') }}" @click="localStorage.setItem('locale','uk')" class="text-sm {{ app()->getLocale() == 'uk' ? 'font-bold' : '' }}">UA</a>
-                <a href="{{ route('lang.switch', 'en') }}" @click="localStorage.setItem('locale','en')" class="text-sm {{ app()->getLocale() == 'en' ? 'font-bold' : '' }}">EN</a>
+                <a href="#" @click.prevent="localStorage.setItem('locale','uk'); location.reload();" class="text-sm">UA</a>
+                <a href="#" @click.prevent="localStorage.setItem('locale','en'); location.reload();" class="text-sm">EN</a>
             </div>
         </nav>
     </div>

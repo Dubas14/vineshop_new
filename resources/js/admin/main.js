@@ -17,7 +17,7 @@ const pinia = createPinia()
 const messages = { en, uk }
 const i18n = createI18n({
     legacy: false,
-    locale: localStorage.getItem('locale') || 'en',
+    locale: localStorage.getItem('locale') || 'uk',
     messages,
 })
 
