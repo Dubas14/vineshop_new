@@ -5,7 +5,15 @@
     <title>@yield('title', 'Vineshop')</title>
     <script>
         const sessionLocale = '{{ app()->getLocale() }}'
-        if (localStorage.getItem('locale') !== sessionLocale) {
+        const storedLocale = localStorage.getItem('locale')
+
+        if (
+            storedLocale &&
+            storedLocale !== sessionLocale &&
+            !window.location.pathname.startsWith('/lang/')
+        ) {
+            window.location.href = `/lang/${storedLocale}`
+        } else if (!storedLocale) {
             localStorage.setItem('locale', sessionLocale)
         }
     </script>
