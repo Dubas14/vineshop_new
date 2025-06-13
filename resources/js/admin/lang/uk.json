@@ -96,6 +96,7 @@
     "photo": "Фото",
     "no_photo": "немає",
     "delete_product_confirm": "Ви впевнені, що хочете видалити цей товар?",
+    "delete_image_confirm": "Видалити зображення?",
     "product_created": "Товар створено!",
     "validation_error": "Помилка валідації",
     "product_save_error": "Помилка при збереженні товару",

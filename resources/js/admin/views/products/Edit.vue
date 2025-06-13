@@ -30,7 +30,10 @@
 
             <div>
                 <label class="block mb-1 font-medium">{{ $t('current_image') }}</label>
-                <img v-if="form.image" :src="`/storage/${form.image}`" class="max-w-xs rounded shadow" />
+                <div v-if="form.image" class="flex items-center gap-2">
+                    <img :src="`/storage/${form.image}`" class="max-w-xs rounded shadow" />
+                    <button type="button" @click="removeMainImage" class="text-red-600 hover:underline">{{ $t('delete') }}</button>
+                </div>
             </div>
 
             <div>
@@ -44,7 +47,10 @@
             <div>
                 <label class="block mb-1 font-medium">{{ $t('add_gallery') }}</label>
                 <div class="flex gap-2 mb-2" v-if="form.images && form.images.length">
-                    <img v-for="img in form.images" :key="img.id" :src="`/storage/${img.path}`" class="w-20 h-20 object-cover rounded" />
+                    <div v-for="img in form.images" :key="img.id" class="relative">
+                        <img :src="`/storage/${img.path}`" class="w-20 h-20 object-cover rounded" />
+                        <button type="button" @click="removeGalleryImage(img.id)" class="absolute top-0 right-0 bg-white text-red-600 rounded-full p-1">&times;</button>
+                    </div>
                 </div>
                 <input type="file" multiple @change="handleGalleryChange" accept="image/*" class="w-full border px-3 py-2 rounded">
                 <div class="flex gap-2 mt-2">
@@ -103,6 +109,18 @@ const handleGalleryChange = (e) => {
         galleryFiles.value.push(file)
         galleryPreviews.value.push(URL.createObjectURL(file))
     })
+}
+
+const removeMainImage = async () => {
+    if (!confirm(t('delete_image_confirm'))) return
+    await axios.delete(`/api/admin/products/${route.params.id}/image`)
+    form.value.image = null
+}
+
+const removeGalleryImage = async (id) => {
+    if (!confirm(t('delete_image_confirm'))) return
+    await axios.delete(`/api/admin/product-images/${id}`)
+    form.value.images = form.value.images.filter(img => img.id !== id)
 }
 
 

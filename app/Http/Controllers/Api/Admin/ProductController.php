@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use App\Models\ProductImage;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -60,6 +61,19 @@ class ProductController extends Controller
             'images.*' => 'image|max:2048',
         ]);
 
+        if ($request->hasFile('image')) {
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        // збереження головного зображення
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $data['image'] = $path;
+        }
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $img) {
                 $imgPath = $img->store('products', 'public');
@@ -76,5 +90,25 @@ class ProductController extends Controller
     {
         $product->delete();
         return response()->json(['message' => 'Deleted']);
+    }
+
+
+    public function destroyImage(Product $product)
+    {
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+            $product->image = null;
+            $product->save();
+        }
+
+        return response()->json(['message' => 'Image deleted']);
+    }
+
+    public function destroyGalleryImage(ProductImage $image)
+    {
+        Storage::disk('public')->delete($image->path);
+        $image->delete();
+
+        return response()->json(['message' => 'Image deleted']);
     }
 }

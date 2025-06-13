@@ -20,6 +20,6 @@ export default defineConfig({
         vue(),
     ],
     server: {
-        https: true
+        http: true
     }
 });

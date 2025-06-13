@@ -96,6 +96,7 @@
     "photo": "Photo",
     "no_photo": "none",
     "delete_product_confirm": "Are you sure you want to delete this product?",
+    "delete_image_confirm": "Delete image?",
     "product_created": "Product created!",
     "validation_error": "Validation error",
     "product_save_error": "Error saving product",
