@@ -1,5 +1,3 @@
-
-
 <script setup>
 import { useAuthStore } from '@/admin/stores/auth'
 import { useRouter } from 'vue-router'
@@ -16,11 +14,15 @@ const logout = async () => {
     router.push({ name: 'login' })
 }
 
-const changeLang = (lang) => {
-    locale.value = lang
-    localStorage.setItem('locale', lang)
-    location.reload()
-}
+const changeLang = async (lang) => {
+    locale.value = lang;
+    localStorage.setItem('locale', lang);
+    try {
+        await axios.get(`/lang/${lang}`);
+    } finally {
+        window.location.reload();
+    }
+};
 </script>
 
 <template>

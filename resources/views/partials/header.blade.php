@@ -55,14 +55,13 @@
                     </div>
                 </div>
         @endauth
-            <div class="flex items-center">
+            <div class="flex gap-2">
                 <a href="{{ route('lang.switch', 'uk') }}"
-                   class="px-2 {{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">
+                   class="{{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">
                     UA
                 </a>
-                |
                 <a href="{{ route('lang.switch', 'en') }}"
-                   class="px-2 {{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">
+                   class="{{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">
                     EN
                 </a>
             </div>
