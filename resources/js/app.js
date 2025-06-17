@@ -32,7 +32,7 @@ const el = document.getElementById('app');
 if (el) {
     const i18n = createI18n({
         legacy: false,
-        locale: localStorage.getItem('locale') || 'uk',
+        locale: window.APP_LOCALE || 'uk', // ✅ читає з Blade (яка читає куку)
         messages: { uk, en },
     });
 

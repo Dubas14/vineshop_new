@@ -56,11 +56,14 @@
                 </div>
         @endauth
             <div class="flex gap-2">
-                <a href="#" onclick="setLang('uk')"
+                <a href="{{ route('lang.switch', ['locale' => 'uk']) }}"
+                   onclick="localStorage.setItem('locale', 'uk')"
                    class="{{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">
                     UA
                 </a>
-                <a href="#" onclick="setLang('en')"
+
+                <a href="{{ route('lang.switch', ['locale' => 'en']) }}"
+                   onclick="localStorage.setItem('locale', 'en')"
                    class="{{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">
                     EN
                 </a>
