@@ -32,6 +32,9 @@ Route::view('/about', 'pages.about')->name('about');
 Route::view('/contacts', 'pages.contacts')->name('contacts');
 
 // --- Кошик ---
+Route::get('/debug-locale', function () {
+    return app()->getLocale(); // має показати 'en' або 'uk'
+});
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::view('/cart', 'pages.cart')->name('cart');
 

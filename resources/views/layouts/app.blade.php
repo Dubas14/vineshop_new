@@ -5,12 +5,9 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Vineshop')</title>
     <script>
-        let storedLocale = localStorage.getItem('locale');
-        if (!storedLocale) {
-            storedLocale = 'uk';
-            localStorage.setItem('locale', storedLocale);
-        }
-        document.documentElement.lang = storedLocale;
+        window.APP_LOCALE = "{{ app()->getLocale() }}";
+        document.documentElement.lang = window.APP_LOCALE;
+        localStorage.setItem('locale', window.APP_LOCALE);
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
