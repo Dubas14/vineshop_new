@@ -9,9 +9,8 @@ class SetLocale
 {
     public function handle($request, Closure $next)
     {
-        // Читаємо з cookie, fallback на config/app.php
         $locale = $request->cookie('locale', config('app.locale'));
-        App::setLocale($locale);
+        app()->setLocale($locale);
 
         return $next($request);
     }

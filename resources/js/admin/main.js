@@ -14,7 +14,7 @@ const pinia = createPinia()
 
 const i18n = createI18n({
     legacy: false,
-    locale: window.APP_LOCALE || localStorage.getItem('locale') || 'uk',
+    locale: window.APP_LOCALE || 'uk',
     fallbackLocale: 'uk',
     messages,
 })

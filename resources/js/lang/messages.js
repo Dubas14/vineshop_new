@@ -63,7 +63,14 @@ export default {
         "about_intro2": "Наша мета — зробити вибір та покупку вина максимально зручною для вас.",
         "contact_intro": "Якщо у вас виникли запитання, зв'яжіться з нами:",
         "rights_reserved": "Всі права захищені.",
-        "no_products": "Немає доступних товарів."
+        "no_products": "Немає доступних товарів.",
+        "dashboard": "Головна",
+        "products": "Товари",
+        "orders": "Замовлення",
+        "banners": "Банери",
+        "add_banner": "Додати банер",
+        "categories_page_title": "Сторінка категорій",
+        "categories_page_description": "Усі наявні категорії"
     },
     "en": {
         "home": "Home",
@@ -129,6 +136,20 @@ export default {
         "about_intro2": "Our goal is to make choosing and buying wine as convenient as possible for you.",
         "contact_intro": "If you have any questions, contact us:",
         "rights_reserved": "All rights reserved.",
-        "no_products": "No products available."
+        "no_products": "No products available.",
+        "id": "ID",
+        "title": "Назва",
+        "image": "Зображення",
+        "type": "Тип",
+        "target": "Посилання",
+        "active": "Активний",
+        "actions": "Дії",
+        "categories_page_title": "Categories Page",
+        "categories_page_description": "All available categories",
+        "dashboard": "Dashboard",
+        "products": "Products",
+        "orders": "Orders",
+        "banners": "Banners",
+        "add_banner": "Add banner"
     }
 };

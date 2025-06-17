@@ -64,4 +64,11 @@ return [
     'contact_intro' => "Якщо у вас виникли запитання, зв'яжіться з нами:",
     'rights_reserved' => 'Всі права захищені.',
     'no_products' => 'Немає доступних товарів.',
+    'dashboard' => 'Головна',
+    'products' => 'Товари',
+    'orders' => 'Замовлення',
+    'banners' => 'Банери',
+    'add_banner' => 'Додати банер',
+    'categories_page_title' => 'Сторінка категорій',
+    'categories_page_description' => 'Усі наявні категорії',
 ];
