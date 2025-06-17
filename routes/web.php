@@ -15,6 +15,14 @@ if (env('APP_ENV') === 'production') {
     URL::forceScheme('https');
 }
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (!in_array($locale, ['uk', 'en'])) {
+        abort(400);
+    }
+    session(['locale' => $locale]);
+    return redirect()->back()->withCookie(cookie('locale', $locale, 60 * 24 * 30));
+})->name('lang.switch');
+
 // --- Публічні сторінки ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
