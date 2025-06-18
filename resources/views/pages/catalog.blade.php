@@ -10,7 +10,6 @@
                 — {{ $category->name }}
             @endisset
         </h1>
-
         @if($products->count())
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($products as $product)
