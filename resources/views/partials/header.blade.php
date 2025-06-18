@@ -55,8 +55,8 @@
 
             {{-- Language switch --}}
             <div class="flex gap-2">
-                <a href="#" onclick="setLocale('uk')" class="{{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">UA</a>
-                <a href="#" onclick="setLocale('en')" class="{{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">EN</a>
+                <a href="#" onclick="event.preventDefault(); setLocale('uk')" class="{{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">UA</a>
+                <a href="#" onclick="event.preventDefault(); setLocale('en')" class="{{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">EN</a>
             </div>
         </nav>
     </div>

@@ -21,7 +21,7 @@ Route::get('/lang/{locale}', function ($locale) {
             abort(400);
         }
 
-        return back()->withCookie(cookie('locale', $locale, 60 * 24 * 365));
+    return back()->withCookie(cookie('locale', $locale, 60 * 24 * 365, '/', null, false, false));
     })->name('lang.switch');
 
 // --- Публічні сторінки ---

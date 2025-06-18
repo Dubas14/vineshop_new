@@ -27,7 +27,7 @@ Route::post('/set-locale', function () {
     }
 
     return response()->json(['locale' => $locale])
-        ->cookie('locale', $locale, 60 * 24 * 365, '/');
+        ->cookie('locale', $locale, 60 * 24 * 365, '/', null, false, false);
 });
 
 
