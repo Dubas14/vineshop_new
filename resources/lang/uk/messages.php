@@ -92,4 +92,6 @@ return [
     'rose' => 'Рожеве',
     'sparkling' => 'Ігристе',
     'dessert' => 'Десертне',
+    'your_cart' => 'Ваш кошик',
+    'cart_empty' => 'Кошик порожній',
 ];

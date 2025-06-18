@@ -99,4 +99,6 @@ return [
     'rose' => 'Rosé',
     'sparkling' => 'Sparkling',
     'dessert' => 'Dessert',
+    'your_cart' => 'Your cart',
+    'cart_empty' => 'Cart is empty',
 ];

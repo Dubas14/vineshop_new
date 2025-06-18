@@ -98,7 +98,9 @@ export default {
         "white": "White",
         "rose": "Rosé",
         "sparkling": "Sparkling",
-        "dessert": "Dessert"
+        "dessert": "Dessert",
+        "your_cart": "Your cart",
+        "cart_empty": "Cart is empty"
     },
     "uk": {
         "home": "Головна",
@@ -192,6 +194,8 @@ export default {
         "white": "Біле",
         "rose": "Рожеве",
         "sparkling": "Ігристе",
-        "dessert": "Десертне"
+        "dessert": "Десертне",
+        "your_cart": "Ваш кошик",
+        "cart_empty": "Кошик порожній"
     }
 };
