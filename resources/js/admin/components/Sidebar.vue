@@ -16,7 +16,6 @@ const logout = async () => {
 
 const changeLang = async (lang) => {
     locale.value = lang;
-    localStorage.setItem('locale', lang);
     try {
         await axios.get(`/lang/${lang}`);
     } finally {

@@ -2,8 +2,7 @@ import './bootstrap';
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Cart from './admin/views/Cart.vue';
-import uk from './admin/lang/uk.json';
-import en from './admin/lang/en.json';
+import messages from './lang/messages';
 
 // --- Alpine.js ---
 import Alpine from 'alpinejs'
@@ -32,8 +31,9 @@ const el = document.getElementById('app');
 if (el) {
     const i18n = createI18n({
         legacy: false,
-        locale: window.APP_LOCALE || 'uk', // ✅ читає з Blade (яка читає куку)
-        messages: { uk, en },
+        locale: window.APP_LOCALE || 'uk',
+        fallbackLocale: 'uk',
+        messages,
     });
 
     const app = createApp({});

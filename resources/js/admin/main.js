@@ -7,7 +7,7 @@ import router from './router'
 import AdminApp from './AdminApp.vue'
 import { useAuthStore } from './stores/auth'
 import { createI18n } from 'vue-i18n'
-import messages from '../lang/messages' // ← Ось тут твій згенерований файл!
+import messages from '../lang/messages'
 
 const app = createApp(AdminApp)
 const pinia = createPinia()

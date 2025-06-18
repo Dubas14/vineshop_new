@@ -8,6 +8,9 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
+    define: {
+        'process.env': {}, // 🔧 потрібно для vue-i18n
+    },
     plugins: [
         laravel({
             input: [

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Vineshop')</title>
     <script>
         window.APP_LOCALE = "{{ app()->getLocale() }}";
-        document.documentElement.lang = window.APP_LOCALE;
-        localStorage.setItem('locale', window.APP_LOCALE);
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

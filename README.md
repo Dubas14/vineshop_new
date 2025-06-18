@@ -17,6 +17,7 @@ php artisan key:generate
 php artisan storage:link
 touch database/database.sqlite
 php artisan migrate --seed
+php artisan lang:export-js   # генерує resources/js/lang/messages.js
 
 # 🎨 Frontend
 npm install

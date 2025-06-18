@@ -57,23 +57,14 @@
         @endauth
             <div class="flex gap-2">
                 <a href="{{ route('lang.switch', ['locale' => 'uk']) }}"
-                   onclick="localStorage.setItem('locale', 'uk')"
                    class="{{ app()->getLocale() === 'uk' ? 'font-bold underline' : '' }}">
                     UA
                 </a>
 
                 <a href="{{ route('lang.switch', ['locale' => 'en']) }}"
-                   onclick="localStorage.setItem('locale', 'en')"
                    class="{{ app()->getLocale() === 'en' ? 'font-bold underline' : '' }}">
                     EN
                 </a>
-
-                <script>
-                    function setLang(lang) {
-                        localStorage.setItem('locale', lang);
-                        window.location.href = `/lang/${lang}`;
-                    }
-                </script>
             </div>
         </nav>
     </div>

@@ -16,11 +16,11 @@ if (env('APP_ENV') === 'production') {
 }
 
 Route::get('/lang/{locale}', function ($locale) {
-    if (!in_array($locale, ['uk', 'en'])) {
+    $allowed = ['uk', 'en'];
+    if (!in_array($locale, $allowed, true)) {
         abort(400);
     }
-    session(['locale' => $locale]);
-    return redirect()->back()->withCookie(cookie('locale', $locale, 60 * 24 * 30));
+    return back()->withCookie(cookie('locale', $locale, 60 * 24 * 30));
 })->name('lang.switch');
 
 // --- Публічні сторінки ---
