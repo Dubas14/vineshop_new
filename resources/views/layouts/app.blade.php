@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Vineshop')</title>
-    <script>
-        window.DEFAULT_LOCALE = "{{ app()->getLocale() }}";
-    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased text-gray-800">
+<div class="absolute top-0 left-0 p-2 bg-gray-200 text-xs">
+    {{ app()->getLocale() }}
+</div>
 @include('partials.header')
 @include('partials.alerts')
 

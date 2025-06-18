@@ -35,7 +35,7 @@ if (el) {
     };
     const i18n = createI18n({
         legacy: false,
-        locale: getCookie('locale') || window.DEFAULT_LOCALE || 'uk',
+        locale: getCookie('locale') || 'uk',
         fallbackLocale: 'uk',
         messages,
     });

@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
-    <script>
-        window.DEFAULT_LOCALE = "{{ app()->getLocale() }}";
-    </script>
     @vite('resources/js/admin/main.js')
 </head>
 <body>
