@@ -9,12 +9,17 @@ import { useAuthStore } from './stores/auth'
 import { createI18n } from 'vue-i18n'
 import messages from '../lang/messages'
 
+const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+};
+
 const app = createApp(AdminApp)
 const pinia = createPinia()
 
 const i18n = createI18n({
     legacy: false,
-    locale: window.APP_LOCALE || 'uk',
+    locale: getCookie('locale') || window.DEFAULT_LOCALE || 'uk',
     fallbackLocale: 'uk',
     messages,
 })

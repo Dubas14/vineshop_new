@@ -17,10 +17,9 @@ const logout = async () => {
 const changeLang = async (lang) => {
     locale.value = lang;
     try {
-        await axios.get(`/lang/${lang}`);
-    } finally {
-        window.location.reload();
-    }
+        await axios.post('/api/set-locale', { locale: lang });
+        document.cookie = `locale=${lang};path=/;max-age=${60 * 60 * 24 * 365}`;
+    } catch (e) {}
 };
 </script>
 

@@ -29,9 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
 const el = document.getElementById('app');
 
 if (el) {
+    const getCookie = (name) => {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    };
     const i18n = createI18n({
         legacy: false,
-        locale: window.APP_LOCALE || 'uk',
+        locale: getCookie('locale') || window.DEFAULT_LOCALE || 'uk',
         fallbackLocale: 'uk',
         messages,
     });

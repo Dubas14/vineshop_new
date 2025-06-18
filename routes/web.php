@@ -16,12 +16,13 @@ if (env('APP_ENV') === 'production') {
 }
 
 Route::get('/lang/{locale}', function ($locale) {
-    $allowed = ['uk', 'en'];
-    if (!in_array($locale, $allowed, true)) {
-        abort(400);
-    }
-    return back()->withCookie(cookie('locale', $locale, 60 * 24 * 30));
-})->name('lang.switch');
+
+        if (!in_array($locale, config('app.locales', ['en', 'uk']), true)) {
+            abort(400);
+        }
+
+        return back()->withCookie(cookie('locale', $locale, 60 * 24 * 365));
+    })->name('lang.switch');
 
 // --- Публічні сторінки ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -32,9 +33,7 @@ Route::view('/about', 'pages.about')->name('about');
 Route::view('/contacts', 'pages.contacts')->name('contacts');
 
 // --- Кошик ---
-Route::get('/debug-locale', function () {
-    return app()->getLocale(); // має показати 'en' або 'uk'
-});
+
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::view('/cart', 'pages.cart')->name('cart');
 

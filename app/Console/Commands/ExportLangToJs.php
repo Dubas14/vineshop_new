@@ -11,7 +11,7 @@ class ExportLangToJs extends Command
 
     public function handle()
     {
-        $locales = ['uk', 'en'];
+        $locales = config('app.locales', ['en', 'uk']);
         $output = [];
 
         foreach ($locales as $locale) {
