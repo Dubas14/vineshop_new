@@ -17,8 +17,11 @@ php artisan key:generate
 php artisan storage:link
 touch database/database.sqlite
 php artisan migrate --seed
-php artisan lang:export-js   # генерує resources/js/lang/messages.js
+php artisan lang:export-js   # генерує resources/js/lang/messages.js із Laravel-перекладів
+node check-missing-i18n.mjs  # перевірка на відсутні ключі в i18n
 
 # 🎨 Frontend
 npm install
 npm run dev
+
+
