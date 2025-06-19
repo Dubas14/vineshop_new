@@ -3,7 +3,6 @@
 @section('title', __('messages.home'))
 
 @section('content')
-
     <div class="banners grid gap-4 mb-8">
         @include('partials.banner_slider')
     </div>

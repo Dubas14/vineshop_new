@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\BannerController;
 use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Cookie;
 
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/admin/logout', [AuthController::class, 'logout']);
@@ -17,6 +18,16 @@ Route::middleware('web')->group(function () {
     Route::get('/cart', [CartController::class, 'apiIndex']);
     Route::put('/cart/update/{id}', [CartController::class, 'apiUpdate']);
     Route::delete('/cart/remove/{id}', [CartController::class, 'apiRemove']);
+});
+
+Route::post('/set-locale', function () {
+    $locale = request('locale');
+    if (!in_array($locale, config('app.locales', ['en', 'uk']), true)) {
+        return response()->json(['message' => 'Invalid locale'], 400);
+    }
+
+    return response()->json(['locale' => $locale])
+        ->cookie('locale', $locale, 60 * 24 * 365, '/', null, false, false);
 });
 
 

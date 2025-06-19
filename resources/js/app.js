@@ -2,8 +2,7 @@ import './bootstrap';
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Cart from './admin/views/Cart.vue';
-import uk from './admin/lang/uk.json';
-import en from './admin/lang/en.json';
+import messages from './lang/messages';
 
 // --- Alpine.js ---
 import Alpine from 'alpinejs'
@@ -30,10 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
 const el = document.getElementById('app');
 
 if (el) {
+    const getCookie = (name) => {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    };
     const i18n = createI18n({
         legacy: false,
-        locale: localStorage.getItem('locale') || 'uk',
-        messages: { uk, en },
+        locale: getCookie('locale') || 'uk',
+        fallbackLocale: 'uk',
+        messages,
     });
 
     const app = createApp({});

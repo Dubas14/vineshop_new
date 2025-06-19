@@ -2,19 +2,16 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
-class EncryptCookies
+class EncryptCookies extends Middleware
 {
     /**
-     * Handle an incoming request.
+     * Імена cookie, які не потрібно шифрувати.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @var array<int, string>
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        return $next($request);
-    }
+    protected $except = [
+        'locale', // ✅ НЕ шифрувати цю cookie — Laravel зможе її прочитати
+    ];
 }

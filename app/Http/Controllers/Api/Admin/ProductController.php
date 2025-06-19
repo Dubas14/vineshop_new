@@ -61,6 +61,7 @@ class ProductController extends Controller
             'images.*' => 'image|max:2048',
         ]);
 
+        // 🟢 оновлення головного зображення
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
@@ -68,12 +69,7 @@ class ProductController extends Controller
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // збереження головного зображення
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
-        }
-
+        // 🟢 збереження додаткових зображень (галереї)
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $img) {
                 $imgPath = $img->store('products', 'public');

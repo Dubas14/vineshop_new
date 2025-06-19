@@ -15,6 +15,15 @@ if (env('APP_ENV') === 'production') {
     URL::forceScheme('https');
 }
 
+Route::get('/lang/{locale}', function ($locale) {
+
+        if (!in_array($locale, config('app.locales', ['en', 'uk']), true)) {
+            abort(400);
+        }
+
+    return back()->withCookie(cookie('locale', $locale, 60 * 24 * 365, '/', null, false, false));
+    })->name('lang.switch');
+
 // --- Публічні сторінки ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
@@ -24,6 +33,7 @@ Route::view('/about', 'pages.about')->name('about');
 Route::view('/contacts', 'pages.contacts')->name('contacts');
 
 // --- Кошик ---
+
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::view('/cart', 'pages.cart')->name('cart');
 

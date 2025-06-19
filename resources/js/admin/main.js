@@ -1,23 +1,26 @@
-import '../../css/app.css' // ✅ Підключення TailwindCSS
+import '../../css/app.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import axios from 'axios'
 import router from './router'
 import AdminApp from './AdminApp.vue'
-import { useAuthStore } from './stores/auth' // ← адаптуй шлях якщо треба
+import { useAuthStore } from './stores/auth'
 import { createI18n } from 'vue-i18n'
-import en from './lang/en.json'
-import uk from './lang/uk.json'
+import messages from '../lang/messages'
 
+const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+};
 
 const app = createApp(AdminApp)
 const pinia = createPinia()
 
-const messages = { en, uk }
 const i18n = createI18n({
     legacy: false,
-    locale: localStorage.getItem('locale') || 'uk',
+    locale: getCookie('locale') || 'uk',
+    fallbackLocale: 'uk',
     messages,
 })
 
@@ -30,9 +33,7 @@ app.use(pinia)
 app.use(router)
 app.use(i18n)
 
-// Використовуй офіційний API Pinia для доступу до store
 router.beforeEach((to, from, next) => {
-    // ЩОБ працювало ПРАВИЛЬНО — викликай useAuthStore З pinia:
     const auth = useAuthStore(pinia)
     const isAuth = auth.isAuthenticated ?? !!localStorage.getItem('token')
 
