@@ -1,64 +1,38 @@
-<header class="bg-white shadow relative z-50">
+@php
+    $count = array_sum(array_column(session('cart', []), 'quantity'));
+@endphp
+
+<header class="bg-white shadow relative z-50" x-data="{ mobileOpen: false }" @close-mobile.window="mobileOpen = false">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <a href="{{ route('home') }}" class="text-xl font-bold">Vineshop</a>
 
-        <nav class="flex space-x-4 items-center">
-            <a href="{{ route('home') }}">@lang('messages.home')</a>
+        {{-- Гамбургер --}}
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path x-show="!mobileOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16" />
+                <path x-show="mobileOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
 
-            {{-- Categories --}}
-            <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
-                <button class="hover:underline focus:outline-none">@lang('messages.categories')</button>
-                <div x-show="open"
-                     x-transition
-                     class="absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
-                     @mouseenter="open = true" @mouseleave="open = false">
-
-                    @foreach($categories as $category)
-                        <a href="{{ route('catalog', ['category' => $category->slug]) }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            {{ $category->name }}
-                        </a>
-                    @endforeach
-
-                </div>
-            </div>
-
-            <a href="{{ route('catalog') }}">@lang('messages.catalog')</a>
-            <a href="{{ route('about') }}">@lang('messages.about')</a>
-            <a href="{{ route('contacts') }}">@lang('messages.contacts')</a>
-            @php
-                $count = array_sum(array_column(session('cart', []), 'quantity'));
-            @endphp
-
-            <a href="{{ route('cart') }}">
-                @lang('messages.cart')
-                @if($count)
-                    ({{ $count }})
-                @endif
-            </a>
-
-            @auth
-                <a href="{{ route('dashboard') }}" class="text-sm font-medium">{{ __('messages.dashboard_title') }}</a>
-            @else
-                {{-- Account --}}
-                <div x-data="{ open: false }" x-cloak class="relative" @mouseenter="open = true" @mouseleave="open = false">
-                    <button class="text-sm font-medium focus:outline-none">
-                        @lang('messages.account')
-                    </button>
-                    <div x-show="open"
-                         x-transition
-                         class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50"
-                         @mouseenter="open = true" @mouseleave="open = false">
-
-                        <a href="{{ route('login') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">@lang('messages.login')</a>
-                        <a href="{{ route('register') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">@lang('messages.register')</a>
-                    </div>
-                </div>
-        @endauth
-            <div class="flex space-x-1 ml-4" x-data>
-                <a href="#" @click.prevent="localStorage.setItem('locale','uk'); location.reload();" class="text-sm">UA</a>
-                <a href="#" @click.prevent="localStorage.setItem('locale','en'); location.reload();" class="text-sm">EN</a>
-            </div>
+        {{-- Десктоп меню --}}
+        <nav class="hidden md:flex space-x-4 items-center">
+            <x-header-links :categories="$categories" :count="$count" />
         </nav>
     </div>
+
+    {{-- Мобильное меню --}}
+    <nav x-show="mobileOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform -translate-y-2"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform -translate-y-2"
+         class="md:hidden bg-white border-t shadow-md px-4 pb-4 space-y-2"
+    >
+        <x-header-links :categories="$categories" :count="$count" mobile />
+    </nav>
 </header>
