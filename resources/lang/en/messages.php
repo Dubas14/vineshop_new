@@ -139,4 +139,5 @@ return [
     'target' => 'Target',
     'active' => 'Active',
     'actions' => 'Actions',
+    'import_products' => 'Import Products',
 ];

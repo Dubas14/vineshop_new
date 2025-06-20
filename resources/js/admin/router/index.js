@@ -43,6 +43,12 @@ const routes = [
         path: '/admin/orders/:id',
         name: 'orders.show',
         component: () => import('@/admin/views/orders/Show.vue')
+    },
+    {
+        path: '/admin/import-products',
+        name: 'ImportProducts',
+        component: () => import('@/admin/views/products/ImportProducts.vue'),
+        meta: { requiresAuth: true },
     }
 ];
 

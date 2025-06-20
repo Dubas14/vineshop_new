@@ -139,4 +139,5 @@ return [
     'type' => 'Тип',
     'target' => 'Ціль',
     'active' => 'Активний',
+    'import_products' => 'Імпорт товарів',
 ];
