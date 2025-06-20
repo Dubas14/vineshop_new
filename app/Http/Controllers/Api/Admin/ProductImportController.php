@@ -31,7 +31,7 @@ class ProductImportController extends Controller
             $data = array_slice($data, 1); // пропускаємо заголовок
         } else {
             // Генеруємо назви типу "Колонка 1", "Колонка 2", ...
-            $columns = array_map(fn($i) => 'Колонка '.($i+1), array_keys($data[0]));
+            $columns = array_map(fn($i) => 'Колонка ' . ($i + 1), array_keys($data[0]));
         }
 
         $previewRows = array_slice($data, 0, 5);
