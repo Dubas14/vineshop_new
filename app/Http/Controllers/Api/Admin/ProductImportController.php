@@ -164,7 +164,7 @@ class ProductImportController extends Controller
             ]
         );
     }
-
+    // formatting update
     private function rowLooksLikeHeader($row)
     {
         // якщо рядок складається з нечислових даних — це заголовки
