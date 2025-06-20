@@ -36,10 +36,12 @@ class ProductImportController extends Controller
 
         $previewRows = array_slice($data, 0, 5);
 
-        return response()->json([
+        return response()->json(
+            [
             'columns' => $columns,
             'rows' => $previewRows,
-        ]);
+            ]
+        );
     }
 
     /**
@@ -47,10 +49,12 @@ class ProductImportController extends Controller
      */
     public function import(Request $request)
     {
-        $request->validate([
+        $request->validate(
+            [
             'file' => 'required|file|mimes:xls,xlsx',
             'mapping' => 'required|json',
-        ]);
+            ]
+        );
 
         $mapping = json_decode($request->input('mapping'), true); // [0 => 'barcode', 1 => 'name', ...]
         $rawData = Excel::toArray([], $request->file('file'))[0];
@@ -84,7 +88,8 @@ class ProductImportController extends Controller
                     'multiplicity'   => null,
                 ];
                 foreach ($mapping as $colIdx => $field) {
-                    if (!$field) continue;
+                    if (!$field) { continue;
+                    }
                     $value = $row[$colIdx] ?? null;
                     if ($field === 'barcode' && $value) {
                         $barcodes[] = trim($value);
@@ -114,7 +119,8 @@ class ProductImportController extends Controller
                 }
                 // Якщо не знайдено — створюємо новий товар
                 if (!$product) {
-                    $product = Product::create([
+                    $product = Product::create(
+                        [
                         'sku'  => 'SKU_' . Str::upper(Str::random(8)),
                         'name' => $productData['name'],
                         'supplier_code'  => $productData['supplier_code'],
@@ -125,7 +131,8 @@ class ProductImportController extends Controller
                         'sale_price'     => $productData['sale_price'],
                         'quantity'       => $productData['quantity'],
                         'multiplicity'   => $productData['multiplicity'],
-                    ]);
+                        ]
+                    );
                 } else {
                     // Якщо знайдено — оновлюємо тільки ті поля, які прийшли
                     $product->fill(array_filter($productData, fn($v) => !is_null($v)));
@@ -134,10 +141,12 @@ class ProductImportController extends Controller
 
                 // Додаємо ВСІ штрихкоди для товару (тільки нові)
                 foreach ($barcodes as $barcode) {
-                    Barcode::firstOrCreate([
+                    Barcode::firstOrCreate(
+                        [
                         'product_id' => $product->id,
                         'barcode'    => $barcode,
-                    ]);
+                        ]
+                    );
                 }
 
                 $imported++;
@@ -148,10 +157,12 @@ class ProductImportController extends Controller
             return response()->json(['message' => 'Помилка при імпорті: '.$e->getMessage()], 500);
         }
 
-        return response()->json([
+        return response()->json(
+            [
             'count' => $imported,
             'errors' => $errors,
-        ]);
+            ]
+        );
     }
 
     private function rowLooksLikeHeader($row)
