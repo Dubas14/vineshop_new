@@ -11,32 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('sku')->unique()->nullable(); // унікальний артикул
-            $table->string('supplier_code')->nullable();
-            $table->string('country')->nullable();
-            $table->string('manufacturer')->nullable();
-            $table->string('brand')->nullable();
-            $table->decimal('purchase_price', 10, 2)->nullable();
-            $table->decimal('sale_price', 10, 2)->nullable();
-            $table->integer('quantity')->nullable();
-            $table->integer('multiplicity')->nullable();
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->decimal('price', 8, 2);
+            $table->string('image')->nullable();
+            $table->timestamps();
         });
     }
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn([
-                'sku',
-                'supplier_code',
-                'country',
-                'manufacturer',
-                'brand',
-                'purchase_price',
-                'sale_price',
-                'quantity',
-                'multiplicity',
-            ]);
-        });
+        Schema::dropIfExists('products');
     }
 };

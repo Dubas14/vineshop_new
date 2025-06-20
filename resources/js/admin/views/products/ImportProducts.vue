@@ -31,6 +31,11 @@
 
         <div v-if="importResult" class="mt-2 text-green-700">{{ importResult }}</div>
         <div v-if="importError" class="mt-2 text-red-700">{{ importError }}</div>
+        <div v-if="importErrors && importErrors.length">
+            <ul>
+                <li v-for="err in importErrors" :key="err" class="text-red-700">{{ err }}</li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -78,6 +83,7 @@ async function onFileChange(e) {
     }
 }
 
+const importErrors = ref([])
 async function importProducts() {
     if (!file.value) return
     importResult.value = ''
@@ -88,8 +94,10 @@ async function importProducts() {
     try {
         const resp = await axios.post('/api/import/products', formData)
         importResult.value = 'Імпортовано: ' + resp.data.count + ' товарів'
+        importErrors.value = resp.data.errors || []
     } catch (e) {
         importError.value = e.response?.data?.message || 'Помилка імпорту'
     }
 }
+
 </script>
