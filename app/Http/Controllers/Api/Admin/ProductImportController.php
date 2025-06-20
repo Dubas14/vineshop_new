@@ -38,8 +38,8 @@ class ProductImportController extends Controller
 
         return response()->json(
             [
-            'columns' => $columns,
-            'rows' => $previewRows,
+                'columns' => $columns,
+                'rows' => $previewRows,
             ]
         );
     }
@@ -51,8 +51,8 @@ class ProductImportController extends Controller
     {
         $request->validate(
             [
-            'file' => 'required|file|mimes:xls,xlsx',
-            'mapping' => 'required|json',
+                'file' => 'required|file|mimes:xls,xlsx',
+                'mapping' => 'required|json',
             ]
         );
 
@@ -88,7 +88,8 @@ class ProductImportController extends Controller
                     'multiplicity'   => null,
                 ];
                 foreach ($mapping as $colIdx => $field) {
-                    if (!$field) { continue;
+                    if (!$field) {
+                        continue;
                     }
                     $value = $row[$colIdx] ?? null;
                     if ($field === 'barcode' && $value) {
@@ -100,11 +101,11 @@ class ProductImportController extends Controller
 
                 // Валідація: назва має бути обовʼязкова
                 if (!$productData['name']) {
-                    $errors[] = "Рядок ".($rowNum+2).": не вказано назву товару";
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано назву товару";
                     continue;
                 }
                 if (empty($barcodes)) {
-                    $errors[] = "Рядок ".($rowNum+2).": не вказано жодного штрихкоду";
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано жодного штрихкоду";
                     continue;
                 }
 
@@ -121,16 +122,16 @@ class ProductImportController extends Controller
                 if (!$product) {
                     $product = Product::create(
                         [
-                        'sku'  => 'SKU_' . Str::upper(Str::random(8)),
-                        'name' => $productData['name'],
-                        'supplier_code'  => $productData['supplier_code'],
-                        'country'        => $productData['country'],
-                        'manufacturer'   => $productData['manufacturer'],
-                        'brand'          => $productData['brand'],
-                        'purchase_price' => $productData['purchase_price'],
-                        'sale_price'     => $productData['sale_price'],
-                        'quantity'       => $productData['quantity'],
-                        'multiplicity'   => $productData['multiplicity'],
+                            'sku'  => 'SKU_' . Str::upper(Str::random(8)),
+                            'name' => $productData['name'],
+                            'supplier_code'  => $productData['supplier_code'],
+                            'country'        => $productData['country'],
+                            'manufacturer'   => $productData['manufacturer'],
+                            'brand'          => $productData['brand'],
+                            'purchase_price' => $productData['purchase_price'],
+                            'sale_price'     => $productData['sale_price'],
+                            'quantity'       => $productData['quantity'],
+                            'multiplicity'   => $productData['multiplicity'],
                         ]
                     );
                 } else {
@@ -143,8 +144,8 @@ class ProductImportController extends Controller
                 foreach ($barcodes as $barcode) {
                     Barcode::firstOrCreate(
                         [
-                        'product_id' => $product->id,
-                        'barcode'    => $barcode,
+                            'product_id' => $product->id,
+                            'barcode'    => $barcode,
                         ]
                     );
                 }
@@ -154,20 +155,20 @@ class ProductImportController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Помилка при імпорті: '.$e->getMessage()], 500);
+            return response()->json(['message' => 'Помилка при імпорті: ' . $e->getMessage()], 500);
         }
 
         return response()->json(
             [
-            'count' => $imported,
-            'errors' => $errors,
+                'count' => $imported,
+                'errors' => $errors,
             ]
         );
     }
-    // formatting update
+
     private function rowLooksLikeHeader($row)
     {
         // якщо рядок складається з нечислових даних — це заголовки
-        return collect($row)->filter(fn($val) => !is_numeric($val))->count() > count($row)/2;
+        return collect($row)->filter(fn($val) => !is_numeric($val))->count() > count($row) / 2;
     }
 }
