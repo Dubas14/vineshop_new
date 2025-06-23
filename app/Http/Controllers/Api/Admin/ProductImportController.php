@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductImportController extends Controller
 {
-    const MAX_IMPORT_ROWS = 5000;
-    const FALLBACK_CATEGORY_ID = 1;
+    public const MAX_IMPORT_ROWS = 5000;
+    public const FALLBACK_CATEGORY_ID = 1;
 
     public function preview(Request $request)
     {
@@ -188,7 +188,8 @@ class ProductImportController extends Controller
                     }
                 }
                 if (!empty($numericErrors)) {
-                    $errors[] = "Рядок " . ($rowNum + 2) . ": некоректні числові значення для полів: " . implode(', ', $numericErrors);
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": некоректні числові значення для полів: " .
+                        implode(', ', $numericErrors);
                     continue;
                 }
 
