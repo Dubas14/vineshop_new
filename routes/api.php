@@ -14,8 +14,8 @@ Route::post('/admin/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/admin/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/admin/user', [AuthController::class, 'user']);
 Route::get('/banners', [BannerController::class, 'public']);
-Route::post('/import/preview', [ProductImportController::class, 'preview']);
-Route::post('/import/products', [ProductImportController::class, 'import']);
+Route::post('/products/import/preview', [ProductImportController::class, 'preview']);
+Route::post('/products/import/process', [ProductImportController::class, 'import']);
 
 
 Route::middleware('web')->group(function () {

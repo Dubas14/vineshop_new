@@ -6,106 +6,107 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Barcode;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ProductImportController extends Controller
 {
-    /**
-     * Повертає превʼю перших 5 рядків з Excel (назви колонок + дані)
-     */
+    const MAX_IMPORT_ROWS = 5000;
+    const FALLBACK_CATEGORY_ID = 1;
+
     public function preview(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:xls,xlsx,csv|max:10240' // Максимум 10MB
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        $request->validate(['file' => 'required|file|mimes:csv,txt']);
 
         try {
-            $data = Excel::toArray([], $request->file('file'))[0];
-
-            if (count($data) === 0) {
-                return response()->json(['message' => 'Файл порожній'], 422);
-            }
-
+            $file = $request->file('file');
+            $delimiter = $this->detectDelimiter($file->getPathname());
+            $rows = [];
             $columns = [];
-            // Якщо в першому рядку текстові дані — це заголовки
-            if (count($data) > 0 && $this->rowLooksLikeHeader($data[0])) {
-                $columns = array_map('trim', $data[0]);
-                $data = array_slice($data, 1); // пропускаємо заголовок
-            } else {
-                // Генеруємо назви типу "Колонка 1", "Колонка 2", ...
-                $columns = array_map(fn($i) => 'Колонка ' . ($i + 1), array_keys($data[0]));
+
+            if (($handle = fopen($file->getPathname(), 'r')) !== false) {
+                $rowIndex = 0;
+                while (($data = fgetcsv($handle, 10000, $delimiter)) !== false && count($rows) < 6) {
+                    if ($rowIndex === 0) {
+                        $columns = array_map('trim', $data);
+                    } else {
+                        $rows[] = array_map('trim', $data);
+                    }
+                    $rowIndex++;
+                }
+                fclose($handle);
             }
 
-            $previewRows = array_slice($data, 0, 5);
+            if (empty($columns) || count($rows) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Файл порожній або невалідний'
+                ], 422);
+            }
 
             return response()->json([
+                'success' => true,
                 'columns' => $columns,
-                'rows' => $previewRows,
-                'total_rows' => count($data),
+                'rows' => array_slice($rows, 0, 5),
+                'delimiter' => $delimiter,
             ]);
+
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Помилка при читанні файлу: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Помилка при обробці файлу: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    /**
-     * Імпортує товари із Excel-файлу та мапінгу колонок
-     */
     public function import(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:xls,xlsx,csv|max:10240',
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt',
             'mapping' => 'required|json',
-            'update_existing' => 'sometimes|boolean',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         $mapping = json_decode($request->input('mapping'), true);
-        $updateExisting = $request->input('update_existing', true);
+        $file = $request->file('file');
+        $delimiter = $this->detectDelimiter($file->getPathname());
 
-        try {
-            $rawData = Excel::toArray([], $request->file('file'))[0];
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Помилка при читанні файлу: ' . $e->getMessage()], 500);
+        $rawData = [];
+        $header = [];
+        if (($handle = fopen($file->getPathname(), 'r')) !== false) {
+            // Читаємо заголовок
+            $header = fgetcsv($handle, 10000, $delimiter);
+            $header = array_map('trim', $header);
+
+            // Зчитуємо всі рядки даних
+            while (($data = fgetcsv($handle, 10000, $delimiter)) !== false) {
+                // Тримаємо значення та зберігаємо
+                $trimmedRow = array_map('trim', $data);
+                // Перевіряємо чи рядок не є повністю пустим
+                if (count(array_filter($trimmedRow, fn($v) => $v !== '')) > 0) {
+                    $rawData[] = $trimmedRow;
+                }
+            }
+            fclose($handle);
         }
 
         if (count($rawData) === 0) {
-            return response()->json(['message' => 'Файл порожній'], 422);
-        }
-
-        // Визначаємо, чи є заголовки
-        $hasHeader = $this->rowLooksLikeHeader($rawData[0]);
-        if ($hasHeader) {
-            $rawData = array_slice($rawData, 1);
+            return response()->json(['message' => 'Файл порожній або невалідний'], 422);
         }
 
         $imported = 0;
-        $updated = 0;
-        $skipped = 0;
         $errors = [];
 
         DB::beginTransaction();
         try {
             foreach ($rawData as $rowNum => $row) {
-                $rowNumForError = $hasHeader ? $rowNum + 2 : $rowNum + 1;
-
-                // Пропускаємо повністю порожні рядки
-                if (count(array_filter($row, fn($v) => !empty(trim($v ?? '')))) === 0) {
-                    $skipped++;
+                // Перевірка на повністю пустий рядок
+                if (count(array_filter($row, fn($v) => $v !== '')) === 0) {
                     continue;
                 }
 
-                // Обробляємо дані рядка
                 $barcodes = [];
                 $productData = [
                     'supplier_code'  => null,
@@ -117,50 +118,81 @@ class ProductImportController extends Controller
                     'sale_price'     => null,
                     'quantity'       => null,
                     'multiplicity'   => null,
-                    'description'    => null,
+                    'category_id'    => null,
+                    'price'          => null,
                 ];
 
+                // Обробка маппінгу
                 foreach ($mapping as $colIdx => $field) {
-                    if (!$field || !isset($row[$colIdx])) {
-                        continue;
-                    }
+                    // Пропускаємо неназначені стовпці та неіснуючі індекси
+                    if (!$field || !isset($row[$colIdx])) continue;
 
-                    $value = trim($row[$colIdx] ?? '');
+                    $value = $row[$colIdx];
+                    // Пропускаємо пусті значення
+                    if ($value === '') continue;
 
                     if ($field === 'barcode') {
-                        if (!empty($value)) {
-                            $barcodes[] = $value;
+                        $barcodes[] = $value;
+                    } elseif ($field === 'category_id') {
+                        $categoryName = trim($value);
+                        $slug = Str::slug($categoryName);
+
+                        if (empty($slug)) {
+                            $slug = 'category-' . uniqid();
                         }
+
+                        $cat = Category::firstOrCreate(
+                            ['name' => $categoryName],
+                            [
+                                'slug' => $slug,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]
+                        );
+                        $productData['category_id'] = $cat->id;
                     } elseif (isset($productData[$field])) {
-                        $productData[$field] = $value ?: null;
+                        // Спеціальна обробка для числових полів
+                        if (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity'])) {
+                            $productData[$field] = $this->cleanValue($value, $field);
+                        } else {
+                            $productData[$field] = $value;
+                        }
                     }
                 }
 
+                // Якщо категорію не вказано, використовуємо fallback
+                if (!$productData['category_id']) {
+                    $productData['category_id'] = self::FALLBACK_CATEGORY_ID;
+                }
+
                 // Валідація обов'язкових полів
-                if (!$productData['name']) {
-                    $errors[] = "Рядок {$rowNumForError}: не вказано назву товару";
+                $nameValue = $productData['name'] ?? null;
+                if (!$nameValue) {
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано назву товару";
                     continue;
                 }
 
                 if (empty($barcodes)) {
-                    $errors[] = "Рядок {$rowNumForError}: не вказано жодного штрихкоду";
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано жодного штрихкоду";
                     continue;
                 }
 
-                // Перетворення числових полів
-                if ($productData['purchase_price'] !== null) {
-                    $productData['purchase_price'] = $this->parseNumber($productData['purchase_price']);
+                // Перевірка чисельних полів
+                $numericErrors = [];
+                foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity'] as $field) {
+                    if (isset($productData[$field]) && !is_numeric($productData[$field])) {
+                        $numericErrors[] = $field;
+                    }
+                }
+                if (!empty($numericErrors)) {
+                    $errors[] = "Рядок " . ($rowNum + 2) . ": некоректні числові значення для полів: " . implode(', ', $numericErrors);
+                    continue;
                 }
 
-                if ($productData['sale_price'] !== null) {
-                    $productData['sale_price'] = $this->parseNumber($productData['sale_price']);
-                }
+                // Розрахунок ціни
+                $productData['price'] = $this->calculatePrice($productData);
 
-                if ($productData['quantity'] !== null) {
-                    $productData['quantity'] = $this->parseNumber($productData['quantity']);
-                }
-
-                // Пошук існуючого товару
+                // Пошук існуючого товару за штрихкодом
                 $product = null;
                 foreach ($barcodes as $barcode) {
                     $barcodeRow = Barcode::where('barcode', $barcode)->first();
@@ -170,76 +202,140 @@ class ProductImportController extends Controller
                     }
                 }
 
-                if ($product) {
-                    // Оновлення існуючого товару
-                    if ($updateExisting) {
-                        $product->fill(array_filter($productData, fn($v) => $v !== null));
-                        $product->save();
-                        $updated++;
-                    } else {
-                        $skipped++;
-                        continue;
-                    }
+                // Створення або оновлення товару
+                if (!$product) {
+                    $product = Product::create([
+                        'sku'            => $this->generateUniqueSku($productData['supplier_code']),
+                        'name'           => $nameValue,
+                        'slug'           => Str::slug($nameValue) . '-' . Str::random(4),
+                        'supplier_code'  => $productData['supplier_code'],
+                        'country'        => $productData['country'],
+                        'manufacturer'   => $productData['manufacturer'],
+                        'brand'          => $productData['brand'],
+                        'purchase_price' => $productData['purchase_price'] ?? 0,
+                        'sale_price'     => $productData['sale_price'] ?? 0,
+                        'price'          => $productData['price'] ?? 0,
+                        'quantity'       => $productData['quantity'] ?? 0,
+                        'multiplicity'   => $productData['multiplicity'] ?? 1,
+                        'category_id'    => $productData['category_id'],
+                    ]);
                 } else {
-                    // Створення нового товару
-                    $product = Product::create(array_merge(
-                        [
-                            'sku' => 'SKU_' . Str::upper(Str::random(8)),
-                        ],
-                        array_filter($productData, fn($v) => $v !== null)
-                    ));
-                    $imported++;
+                    $updateData = array_filter($productData, fn($v) => !is_null($v));
+                    unset($updateData['price']); // Не оновлюємо розрахункове поле
+                    $product->fill($updateData);
+                    $product->save();
                 }
 
-                // Додаємо штрихкоди
+                // Додавання штрихкодів
                 foreach ($barcodes as $barcode) {
                     Barcode::firstOrCreate([
                         'product_id' => $product->id,
                         'barcode'    => $barcode,
                     ]);
                 }
-            }
 
+                $imported++;
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Помилка при імпорті: ' . $e->getMessage(),
-                'trace' => config('app.debug') ? $e->getTrace() : null,
-            ], 500);
+            Log::error('Помилка при імпорті: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return response()->json(['message' => 'Помилка при імпорті: ' . $e->getMessage()], 500);
         }
 
         return response()->json([
-            'imported' => $imported,
-            'updated' => $updated,
-            'skipped' => $skipped,
+            'success' => true,
+            'count' => $imported,
             'errors' => $errors,
-            'has_errors' => !empty($errors),
         ]);
     }
 
-    /**
-     * Перевіряє, чи рядок виглядає як заголовок
-     */
-    private function rowLooksLikeHeader(array $row): bool
+    private function detectDelimiter($csvFile)
     {
-        return collect($row)
-                ->filter(fn($val) => is_string($val) && !is_numeric(trim($val)))
-                ->count() > count($row) / 2;
-    }
+        $bom = pack('H*', 'EFBBBF');
+        $firstLine = file_get_contents($csvFile, false, null, 0, 1000);
 
-    /**
-     * Парсить число з різних форматів
-     */
-    private function parseNumber($value)
-    {
-        if (is_numeric($value)) {
-            return $value;
+        // Видалення BOM
+        if (strpos($firstLine, $bom) === 0) {
+            $firstLine = substr($firstLine, 3);
         }
 
-        // Спроба обробити роздільники тисяч
-        $value = str_replace([' ', ','], '', trim($value));
+        // Перевірка на пустий файл
+        if (empty(trim($firstLine))) {
+            return ',';
+        }
 
-        return is_numeric($value) ? $value : null;
+        $delimiters = [",", ";", "\t", "|"];
+        $maxCount = 0;
+        $detected = ',';
+
+        // Знаходимо перший непустий рядок
+        $lines = explode("\n", $firstLine);
+        foreach ($lines as $line) {
+            if (!empty(trim($line))) {
+                $firstLine = $line;
+                break;
+            }
+        }
+
+        // Визначаємо роздільник
+        foreach ($delimiters as $d) {
+            $fields = str_getcsv($firstLine, $d);
+            if (count($fields) > $maxCount) {
+                $maxCount = count($fields);
+                $detected = $d;
+            }
+        }
+        return $detected;
+    }
+
+    private function cleanValue($value, $field)
+    {
+        switch ($field) {
+            case 'purchase_price':
+            case 'sale_price':
+                // Видаляємо всі нецифрові символи крім крапки та коми
+                $cleaned = preg_replace('/[^0-9.,]/', '', $value);
+                // Замінюємо коми на крапки для коректного формату float
+                $cleaned = str_replace(',', '.', $cleaned);
+                return (float) $cleaned;
+            case 'quantity':
+            case 'multiplicity':
+                return (int) preg_replace('/[^0-9]/', '', $value);
+            default:
+                return $value;
+        }
+    }
+
+    private function calculatePrice(array $productData)
+    {
+        // Пріоритет: sale_price > purchase_price
+        if (isset($productData['sale_price']) && is_numeric($productData['sale_price'])) {
+            return (float) $productData['sale_price'];
+        }
+
+        if (isset($productData['purchase_price']) && is_numeric($productData['purchase_price'])) {
+            return round((float) $productData['purchase_price'] * 1.2, 2); // 20% націнка
+        }
+
+        return 0;
+    }
+
+    private function generateUniqueSku($supplierCode = null)
+    {
+        $prefix = 'SKU';
+        if ($supplierCode) {
+            $cleanCode = preg_replace('/[^A-Z0-9]/i', '', $supplierCode);
+            $prefix = Str::upper(Str::limit($cleanCode, 3, ''));
+        }
+
+        $sku = $prefix . '_' . Str::upper(Str::random(6));
+
+        // Перевірка на унікальність
+        while (Product::where('sku', $sku)->exists()) {
+            $sku = $prefix . '_' . Str::upper(Str::random(6));
+        }
+
+        return $sku;
     }
 }
