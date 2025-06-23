@@ -122,9 +122,13 @@ class ProductImportController extends Controller
                 // Мапінг колонок на поля
                 foreach ($mapping as $colIdx => $field) {
                     $field = ltrim($field, "\xEF\xBB\xBF");
-                    if (!$field || !isset($row[$colIdx])) continue;
+                    if (!$field || !isset($row[$colIdx])) {
+                        continue;
+                    }
                     $value = $row[$colIdx];
-                    if ($value === '') continue;
+                    if ($value === '') {
+                        continue;
+                    }
 
                     if ($field === 'barcode') {
                         $barcodes[] = $value;

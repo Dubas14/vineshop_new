@@ -80,7 +80,6 @@ class ProductController extends Controller
 
             // додаємо нове головне зображення також у галерею
             $product->images()->create(['path' => $path]);
-
         } elseif ($request->input('image_deleted')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
