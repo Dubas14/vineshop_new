@@ -53,7 +53,6 @@ class ProductImportController extends Controller
                 'rows' => array_slice($rows, 0, 5),
                 'delimiter' => $delimiter,
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -125,11 +124,15 @@ class ProductImportController extends Controller
                 // Обробка маппінгу
                 foreach ($mapping as $colIdx => $field) {
                     // Пропускаємо неназначені стовпці та неіснуючі індекси
-                    if (!$field || !isset($row[$colIdx])) continue;
+                    if (!$field || !isset($row[$colIdx])) {
+                        continue;
+                    }
 
                     $value = $row[$colIdx];
                     // Пропускаємо пусті значення
-                    if ($value === '') continue;
+                    if ($value === '') {
+                        continue;
+                    }
 
                     if ($field === 'barcode') {
                         $barcodes[] = $value;
