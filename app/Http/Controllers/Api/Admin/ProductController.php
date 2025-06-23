@@ -23,23 +23,33 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'required|image|max:2048',
+            'images.*' => 'nullable|image|max:2048',
         ]);
 
         // збереження головного зображення
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
-        }
+        $path = $request->file('image')->store('products', 'public');
+        $data['image'] = $path;
 
-        // 🟢 генеруємо slug з назви
+        // генеруємо slug з назви
         $data['slug'] = Str::slug($data['name']);
 
         $product = Product::create($data);
 
+        // додаємо головне зображення до галереї
+        $product->images()->create(['path' => $path]);
+
+        // збереження додаткових зображень (галереї)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $img) {
+                $imgPath = $img->store('products', 'public');
+                $product->images()->create(['path' => $imgPath]);
+            }
+        }
+
         return response()->json([
             'message' => 'Товар створено',
-            'product' => $product
+            'product' => $product->load('images')
         ], 201);
     }
 
@@ -58,36 +68,57 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|max:2048',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'nullable|image|max:2048',
         ]);
 
-        // 🟢 оновлення головного зображення
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
-        }
+            $path = $request->file('image')->store('products', 'public');
+            $data['image'] = $path;
 
-        // 🟢 збереження додаткових зображень (галереї)
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $img) {
-                $imgPath = $img->store('products', 'public');
-                $product->images()->create(['path' => $imgPath]);
+            // додаємо нове головне зображення також у галерею
+            $product->images()->create(['path' => $path]);
+
+        } elseif ($request->input('image_deleted')) {
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
             }
+            $data['image'] = null;
+        } else {
+            $data['image'] = $product->image;
         }
 
         $product->update($data);
 
-        return response()->json(['message' => 'Товар оновлено']);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $img) {
+                $imgPath = $img->store('product_gallery', 'public');
+                $product->images()->create(['path' => $imgPath]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Товар оновлено',
+            'product' => $product->load('images')
+        ]);
     }
 
     public function destroy(Product $product)
     {
-        $product->delete();
-        return response()->json(['message' => 'Deleted']);
-    }
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
 
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+
+        $product->delete();
+        return response()->json(['message' => 'Товар видалено']);
+    }
 
     public function destroyImage(Product $product)
     {
@@ -97,7 +128,7 @@ class ProductController extends Controller
             $product->save();
         }
 
-        return response()->json(['message' => 'Image deleted']);
+        return response()->json(['message' => 'Головне зображення видалено']);
     }
 
     public function destroyGalleryImage(ProductImage $image)
@@ -105,6 +136,6 @@ class ProductController extends Controller
         Storage::disk('public')->delete($image->path);
         $image->delete();
 
-        return response()->json(['message' => 'Image deleted']);
+        return response()->json(['message' => 'Зображення галереї видалено']);
     }
 }

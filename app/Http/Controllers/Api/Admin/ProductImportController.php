@@ -10,7 +10,6 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class ProductImportController extends Controller
 {
@@ -72,21 +71,20 @@ class ProductImportController extends Controller
         $file = $request->file('file');
         $delimiter = $this->detectDelimiter($file->getPathname());
 
+        Log::info('Mapping:', $mapping);
+
         $rawData = [];
-        $header = [];
         if (($handle = fopen($file->getPathname(), 'r')) !== false) {
             // Читаємо заголовок
             $header = fgetcsv($handle, 10000, $delimiter);
-            $header = array_map('trim', $header);
 
             // Зчитуємо всі рядки даних
             while (($data = fgetcsv($handle, 10000, $delimiter)) !== false) {
-                // Тримаємо значення та зберігаємо
                 $trimmedRow = array_map('trim', $data);
-                // Перевіряємо чи рядок не є повністю пустим
-                if (count(array_filter($trimmedRow, fn($v) => $v !== '')) > 0) {
-                    $rawData[] = $trimmedRow;
+                if (count(array_filter($trimmedRow, fn($v) => trim($v) !== '')) === 0) {
+                    continue;
                 }
+                $rawData[] = $trimmedRow;
             }
             fclose($handle);
         }
@@ -121,49 +119,34 @@ class ProductImportController extends Controller
                     'price'          => null,
                 ];
 
-                // Обробка маппінгу
+                // Мапінг колонок на поля
                 foreach ($mapping as $colIdx => $field) {
-                    // Пропускаємо неназначені стовпці та неіснуючі індекси
-                    if (!$field || !isset($row[$colIdx])) {
-                        continue;
-                    }
-
+                    $field = ltrim($field, "\xEF\xBB\xBF");
+                    if (!$field || !isset($row[$colIdx])) continue;
                     $value = $row[$colIdx];
-                    // Пропускаємо пусті значення
-                    if ($value === '') {
-                        continue;
-                    }
+                    if ($value === '') continue;
 
                     if ($field === 'barcode') {
                         $barcodes[] = $value;
                     } elseif ($field === 'category_id') {
                         $categoryName = trim($value);
                         $slug = Str::slug($categoryName);
-
                         if (empty($slug)) {
                             $slug = 'category-' . uniqid();
                         }
-
                         $cat = Category::firstOrCreate(
                             ['name' => $categoryName],
-                            [
-                                'slug' => $slug,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]
+                            ['slug' => $slug]
                         );
                         $productData['category_id'] = $cat->id;
-                    } elseif (isset($productData[$field])) {
-                        // Спеціальна обробка для числових полів
-                        if (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity'])) {
-                            $productData[$field] = $this->cleanValue($value, $field);
-                        } else {
-                            $productData[$field] = $value;
-                        }
+                    } elseif (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity'])) {
+                        $productData[$field] = $this->cleanValue($value, $field);
+                    } else {
+                        $productData[$field] = $value;
                     }
                 }
 
-                // Якщо категорію не вказано, використовуємо fallback
+                // Якщо категорію не вказано, fallback
                 if (!$productData['category_id']) {
                     $productData['category_id'] = self::FALLBACK_CATEGORY_ID;
                 }
@@ -180,11 +163,14 @@ class ProductImportController extends Controller
                     continue;
                 }
 
-                // Перевірка чисельних полів
+                // Перевірка числових полів
                 $numericErrors = [];
                 foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity'] as $field) {
-                    if (isset($productData[$field]) && !is_numeric($productData[$field])) {
-                        $numericErrors[] = $field;
+                    // Перевіряємо ТІЛЬКИ якщо value не null і не ''
+                    if (isset($productData[$field]) && $productData[$field] !== null && $productData[$field] !== '') {
+                        if (!is_numeric($productData[$field])) {
+                            $numericErrors[] = $field;
+                        }
                     }
                 }
                 if (!empty($numericErrors)) {
@@ -193,7 +179,7 @@ class ProductImportController extends Controller
                     continue;
                 }
 
-                // Розрахунок ціни
+                // Розрахунок ціни (якщо потрібно)
                 $productData['price'] = $this->calculatePrice($productData);
 
                 // Пошук існуючого товару за штрихкодом
@@ -230,7 +216,7 @@ class ProductImportController extends Controller
                     $product->save();
                 }
 
-                // Додавання штрихкодів
+                // Додаємо штрихкоди
                 foreach ($barcodes as $barcode) {
                     Barcode::firstOrCreate([
                         'product_id' => $product->id,
@@ -299,13 +285,13 @@ class ProductImportController extends Controller
             case 'purchase_price':
             case 'sale_price':
                 // Видаляємо всі нецифрові символи крім крапки та коми
-                $cleaned = preg_replace('/[^0-9.,]/', '', $value);
-                // Замінюємо коми на крапки для коректного формату float
+                $cleaned = preg_replace('/[^0-9.,\-]/', '', $value);
+                // Замінюємо коми на крапки для float
                 $cleaned = str_replace(',', '.', $cleaned);
-                return (float) $cleaned;
+                return is_numeric($cleaned) ? (float)$cleaned : null;
             case 'quantity':
             case 'multiplicity':
-                return (int) preg_replace('/[^0-9]/', '', $value);
+                return (int) preg_replace('/[^0-9\-]/', '', $value);
             default:
                 return $value;
         }
@@ -313,15 +299,12 @@ class ProductImportController extends Controller
 
     private function calculatePrice(array $productData)
     {
-        // Пріоритет: sale_price > purchase_price
         if (isset($productData['sale_price']) && is_numeric($productData['sale_price'])) {
             return (float) $productData['sale_price'];
         }
-
         if (isset($productData['purchase_price']) && is_numeric($productData['purchase_price'])) {
-            return round((float) $productData['purchase_price'] * 1.2, 2); // 20% націнка
+            return round((float) $productData['purchase_price'] * 1.2, 2);
         }
-
         return 0;
     }
 
@@ -332,14 +315,10 @@ class ProductImportController extends Controller
             $cleanCode = preg_replace('/[^A-Z0-9]/i', '', $supplierCode);
             $prefix = Str::upper(Str::limit($cleanCode, 3, ''));
         }
-
         $sku = $prefix . '_' . Str::upper(Str::random(6));
-
-        // Перевірка на унікальність
         while (Product::where('sku', $sku)->exists()) {
             $sku = $prefix . '_' . Str::upper(Str::random(6));
         }
-
         return $sku;
     }
 }

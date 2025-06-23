@@ -138,7 +138,8 @@ export default {
         "image": "Зображення",
         "type": "Тип",
         "target": "Ціль",
-        "active": "Активний"
+        "active": "Активний",
+        "import_products": "Імпорт товарів"
     },
     "en": {
         "home": "Home",
@@ -279,6 +280,7 @@ export default {
         "type": "Type",
         "target": "Target",
         "active": "Active",
-        "actions": "Actions"
+        "actions": "Actions",
+        "import_products": "Import Products"
     }
 };

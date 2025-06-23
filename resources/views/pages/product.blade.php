@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 @php
-                    $main = $product->images->first()->path ?? $product->image;
+                    $main = $product->image ?? optional($product->images->first())->path;
                 @endphp
                 <img id="main-image" src="{{ asset('storage/' . $main) }}" alt="{{ $product->name }}" class="rounded-lg shadow max-w-md max-h-96 object-contain mx-auto">
 
