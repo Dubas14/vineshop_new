@@ -19,6 +19,7 @@ touch database/database.sqlite
 php artisan migrate --seed
 php artisan lang:export-js   # генерує resources/js/lang/messages.js із Laravel-перекладів
 node check-missing-i18n.mjs  # перевірка на відсутні ключі в i18n
+npm install @heroicons/vue # Для коректної роботи іконок у Vue-компонентах встановіть бібліотеку Heroicons:
 
 # 🎨 Frontend
 npm install

@@ -42,7 +42,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Опис до товару "' . $name . '"',
                 'price' => $price,
                 'category_id' => $categoryMap[$categoryName],
-                'image' => 'default.jpg',
+                'image' => 'no-image.png',
             ]);
         }
     }

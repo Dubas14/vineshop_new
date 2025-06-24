@@ -8,11 +8,15 @@ use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\BannerController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\Api\Admin\ProductImportController;
 
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/admin/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/admin/user', [AuthController::class, 'user']);
 Route::get('/banners', [BannerController::class, 'public']);
+Route::post('/products/import/preview', [ProductImportController::class, 'preview']);
+Route::post('/products/import/process', [ProductImportController::class, 'import']);
+
 
 Route::middleware('web')->group(function () {
     Route::get('/cart', [CartController::class, 'apiIndex']);
@@ -41,4 +45,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
     Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'show']);
     Route::put('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'update']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
+    Route::post('categories', [CategoryController::class, 'store']);
 });

@@ -15,10 +15,20 @@
                 @foreach($products as $product)
                     <div class="products-item border rounded p-4 shadow hover:shadow-md transition">
                         <a href="{{ route('product', $product->slug) }}">
-                            @php $preview = $product->images->first()->path ?? $product->image; @endphp
-                            <img src="{{ asset('storage/' . $preview) }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img mb-3">
-                            <h2 class="products-item__name font-semibold text-lg">{{ $product->name }}</h2>
-                            <p class="products-item__price text-gray-600">{{ number_format($product->price, 2) }} грн</p>
+                            @php
+                                if ($product->image) {
+                                    $imagePath = asset('storage/' . $product->image);
+                                } elseif ($product->images->first()) {
+                                    $imagePath = asset('storage/' . $product->images->first()->path);
+                                } else {
+                                    $imagePath = asset('images/no-image.png'); // розмісти no-image.png в /public/images/
+                                }
+                            @endphp
+                            <img src="{{ $imagePath }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img">
+                            <div class="mt-2 space-y-1">
+                                <h3 class="text-sm text-gray-900 font-medium">{{ $product->name }}</h3>
+                                <p class="products-item__price text-red-600 font-semibold">{{ number_format($product->price, 2) }} грн</p>
+                            </div>
                         </a>
                     </div>
                 @endforeach

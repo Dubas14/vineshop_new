@@ -14,6 +14,15 @@ class Product extends Model
         'image',
         'category_id',
         'slug',
+        'sku',
+        'supplier_code',
+        'country',
+        'manufacturer',
+        'brand',
+        'purchase_price',
+        'sale_price',
+        'quantity',
+        'multiplicity',
     ];
     public function category()
     {
