@@ -236,7 +236,8 @@ class ProductImportController extends Controller
                 if ($product) {
                     $updated = false;
                     foreach (self::UPDATABLE_FIELDS as $field) {
-                        if ((empty($product->{$field}) || is_null($product->{$field})) && !empty($productData[$field])) {
+                        if ((empty($product->{$field}) || is_null($product->{$field}))
+                            && !empty($productData[$field])) {
                             $product->{$field} = $productData[$field];
                             $updated = true;
                         }
