@@ -45,4 +45,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
     Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'show']);
     Route::put('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'update']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
+    Route::post('categories', [CategoryController::class, 'store']);
 });

@@ -3,6 +3,7 @@ import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Cart from './admin/views/Cart.vue';
 import messages from './lang/messages';
+import { getCookie } from './utils/cookies';
 
 // --- Alpine.js ---
 import Alpine from 'alpinejs'
@@ -29,10 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const el = document.getElementById('app');
 
 if (el) {
-    const getCookie = (name) => {
-        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-        return match ? decodeURIComponent(match[1]) : null;
-    };
     const i18n = createI18n({
         legacy: false,
         locale: getCookie('locale') || 'uk',
