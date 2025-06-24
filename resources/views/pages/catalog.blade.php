@@ -16,8 +16,13 @@
                     <div class="products-item border rounded p-4 shadow hover:shadow-md transition">
                         <a href="{{ route('product', $product->slug) }}">
                             @php
-                                $preview = $product->images->first()->path ?? $product->image;
-                                $imagePath = $preview ? asset('storage/' . $preview) : asset('images/no-image.png');
+                                if ($product->image) {
+                                    $imagePath = asset('storage/' . $product->image);
+                                } elseif ($product->images->first()) {
+                                    $imagePath = asset('storage/' . $product->images->first()->path);
+                                } else {
+                                    $imagePath = asset('images/no-image.png'); // розмісти no-image.png в /public/images/
+                                }
                             @endphp
                             <img src="{{ $imagePath }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img">
                             <div class="mt-2 space-y-1">
