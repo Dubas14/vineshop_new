@@ -17,8 +17,8 @@
                 @foreach($products as $product)
                     <a href="{{ route('product', $product->slug) }}"
                        class="products-item block bg-white rounded-lg overflow-hidden shadow hover:shadow-md transition">
-                        @php $preview = $product->images->first()->path ?? $product->image; @endphp
-                        <img src="{{ asset('storage/' . $preview) }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img">
+                        @php $preview = $product->image ?? optional($product->images->first())->path; @endphp
+                        <img src="{{ asset('storage/' . $preview) }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img mb-3">
                         <div class="p-3 space-y-1">
                             <div class="products-item__category text-sm text-gray-500">{{ $product->category->name ?? '' }}</div>
                             <h3 class="products-item__name text-lg font-semibold">{{ $product->name }}</h3>
