@@ -8,11 +8,13 @@ import AdminApp from './AdminApp.vue'
 import { useAuthStore } from './stores/auth'
 import { createI18n } from 'vue-i18n'
 import messages from '../lang/messages'
+import ToastNotification from './components/ToastNotification.vue'
 
 import { getCookie } from '../utils/cookies'
 
 const app = createApp(AdminApp)
 const pinia = createPinia()
+app.component('ToastNotification', ToastNotification)
 
 const i18n = createI18n({
     legacy: false,

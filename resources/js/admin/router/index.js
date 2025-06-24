@@ -49,7 +49,18 @@ const routes = [
         name: 'ImportProducts',
         component: () => import('@/admin/views/products/ImportProducts.vue'),
         meta: { requiresAuth: true },
-    }
+    },
+    { path: '/admin/categories', name: 'categories', component: Categories },
+    {
+        path: '/admin/categories/create',
+        name: 'categories.create',
+        component: () => import('@/admin/views/categories/Create.vue'),
+    },
+    {
+        path: '/admin/categories/:id/edit',
+        name: 'categories.edit',
+        component: () => import('@/admin/views/categories/Edit.vue'),
+    },
 ];
 
 

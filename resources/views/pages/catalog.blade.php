@@ -20,7 +20,10 @@
                                 $imagePath = $preview ? asset('storage/' . $preview) : asset('images/no-image.png');
                             @endphp
                             <img src="{{ $imagePath }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img">
-                            <p class="products-item__price text-gray-600">{{ number_format($product->price, 2) }} грн</p>
+                            <div class="mt-2 space-y-1">
+                                <h3 class="text-sm text-gray-900 font-medium">{{ $product->name }}</h3>
+                                <p class="products-item__price text-red-600 font-semibold">{{ number_format($product->price, 2) }} грн</p>
+                            </div>
                         </a>
                     </div>
                 @endforeach

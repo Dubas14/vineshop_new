@@ -13,9 +13,21 @@ use Illuminate\Support\Facades\Log;
 
 class ProductImportController extends Controller
 {
+    // Максимальна кількість рядків для імпорту за раз
     public const MAX_IMPORT_ROWS = 5000;
+    // ID категорії за замовчуванням, якщо не знайдена/не вказана
     public const FALLBACK_CATEGORY_ID = 1;
 
+    // Перелік полів, які можна оновлювати для існуючих товарів
+    private const UPDATABLE_FIELDS = [
+        'supplier_code', 'name', 'country', 'manufacturer', 'brand',
+        'purchase_price', 'sale_price', 'quantity', 'multiplicity',
+        'category_id', 'price'
+    ];
+
+    /**
+     * Попередній перегляд файлу імпорту (перші 5 рядків для мапінгу)
+     */
     public function preview(Request $request)
     {
         $request->validate(['file' => 'required|file|mimes:csv,txt']);
@@ -60,6 +72,9 @@ class ProductImportController extends Controller
         }
     }
 
+    /**
+     * Основний метод імпорту CSV
+     */
     public function import(Request $request)
     {
         $request->validate([
@@ -104,6 +119,7 @@ class ProductImportController extends Controller
                     continue;
                 }
 
+                // 1. Готуємо базову структуру для даних товару
                 $barcodes = [];
                 $productData = [
                     'supplier_code'  => null,
@@ -119,7 +135,7 @@ class ProductImportController extends Controller
                     'price'          => null,
                 ];
 
-                // Мапінг колонок на поля
+                // 2. Мапінг полів з рядка CSV у структуру товару
                 foreach ($mapping as $colIdx => $field) {
                     $field = ltrim($field, "\xEF\xBB\xBF");
                     if (!$field || !isset($row[$colIdx])) {
@@ -150,7 +166,7 @@ class ProductImportController extends Controller
                     }
                 }
 
-                // Якщо категорію не вказано, fallback
+                // Якщо категорію не вказано — fallback
                 if (!$productData['category_id']) {
                     $productData['category_id'] = self::FALLBACK_CATEGORY_ID;
                 }
@@ -161,16 +177,13 @@ class ProductImportController extends Controller
                     $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано назву товару";
                     continue;
                 }
-
                 if (empty($barcodes)) {
                     $errors[] = "Рядок " . ($rowNum + 2) . ": не вказано жодного штрихкоду";
                     continue;
                 }
-
                 // Перевірка числових полів
                 $numericErrors = [];
                 foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity'] as $field) {
-                    // Перевіряємо ТІЛЬКИ якщо value не null і не ''
                     if (isset($productData[$field]) && $productData[$field] !== null && $productData[$field] !== '') {
                         if (!is_numeric($productData[$field])) {
                             $numericErrors[] = $field;
@@ -182,11 +195,14 @@ class ProductImportController extends Controller
                         implode(', ', $numericErrors);
                     continue;
                 }
-
                 // Розрахунок ціни (якщо потрібно)
                 $productData['price'] = $this->calculatePrice($productData);
 
-                // Пошук існуючого товару за штрихкодом
+                /**
+                 * ОСНОВНА ЛОГІКА: пошук та оновлення/створення товару
+                 */
+
+                // 3.1. Шукаємо продукт по штрихкоду (унікальний!)
                 $product = null;
                 foreach ($barcodes as $barcode) {
                     $barcodeRow = Barcode::where('barcode', $barcode)->first();
@@ -196,8 +212,53 @@ class ProductImportController extends Controller
                     }
                 }
 
-                // Створення або оновлення товару
-                if (!$product) {
+                // 3.2. Якщо не знайдено по штрихкоду — шукаємо по назві
+                $foundByName = false;
+                if (!$product && !empty($nameValue)) {
+                    $product = Product::where('name', $nameValue)->first();
+                    if ($product) {
+                        $foundByName = true;
+                        // Додаємо ВСІ штрихкоди до цієї карточки (як альтернативні)
+                        foreach ($barcodes as $barcode) {
+                            $existingBarcode = Barcode::where('barcode', $barcode)->first();
+                            if (!$existingBarcode) {
+                                Barcode::create([
+                                    'product_id' => $product->id,
+                                    'barcode'    => $barcode,
+                                    // 'type' => 'alternative'
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                // 3.3. Якщо знайдено товар — оновлюємо лише ПУСТІ поля
+                if ($product) {
+                    $updated = false;
+                    foreach (self::UPDATABLE_FIELDS as $field) {
+                        if ((empty($product->{$field}) || is_null($product->{$field})) && !empty($productData[$field])) {
+                            $product->{$field} = $productData[$field];
+                            $updated = true;
+                        }
+                    }
+                    if ($updated) {
+                        $product->save();
+                    }
+
+                    // Якщо це був пошук по штрихкоду (а не по назві), додаємо ВСІ нові штрихкоди (яких немає)
+                    if (!$foundByName) {
+                        foreach ($barcodes as $barcode) {
+                            $existingBarcode = Barcode::where('barcode', $barcode)->first();
+                            if (!$existingBarcode) {
+                                Barcode::create([
+                                    'product_id' => $product->id,
+                                    'barcode'    => $barcode,
+                                ]);
+                            }
+                        }
+                    }
+                } else {
+                    // 3.4. Якщо не знайдено ніде — створюємо новий товар і додаємо штрихкоди
                     $product = Product::create([
                         'sku'            => $this->generateUniqueSku($productData['supplier_code']),
                         'name'           => $nameValue,
@@ -213,21 +274,16 @@ class ProductImportController extends Controller
                         'multiplicity'   => $productData['multiplicity'] ?? 1,
                         'category_id'    => $productData['category_id'],
                     ]);
-                } else {
-                    $updateData = array_filter($productData, fn($v) => !is_null($v));
-                    unset($updateData['price']); // Не оновлюємо розрахункове поле
-                    $product->fill($updateData);
-                    $product->save();
+                    foreach ($barcodes as $barcode) {
+                        $existingBarcode = Barcode::where('barcode', $barcode)->first();
+                        if (!$existingBarcode) {
+                            Barcode::create([
+                                'product_id' => $product->id,
+                                'barcode'    => $barcode,
+                            ]);
+                        }
+                    }
                 }
-
-                // Додаємо штрихкоди
-                foreach ($barcodes as $barcode) {
-                    Barcode::firstOrCreate([
-                        'product_id' => $product->id,
-                        'barcode'    => $barcode,
-                    ]);
-                }
-
                 $imported++;
             }
             DB::commit();
@@ -244,26 +300,23 @@ class ProductImportController extends Controller
         ]);
     }
 
+    /**
+     * Визначає роздільник (delimiter) для CSV
+     */
     private function detectDelimiter($csvFile)
     {
         $bom = pack('H*', 'EFBBBF');
         $firstLine = file_get_contents($csvFile, false, null, 0, 1000);
 
-        // Видалення BOM
         if (strpos($firstLine, $bom) === 0) {
             $firstLine = substr($firstLine, 3);
         }
-
-        // Перевірка на пустий файл
         if (empty(trim($firstLine))) {
             return ',';
         }
-
         $delimiters = [",", ";", "\t", "|"];
         $maxCount = 0;
         $detected = ',';
-
-        // Знаходимо перший непустий рядок
         $lines = explode("\n", $firstLine);
         foreach ($lines as $line) {
             if (!empty(trim($line))) {
@@ -271,8 +324,6 @@ class ProductImportController extends Controller
                 break;
             }
         }
-
-        // Визначаємо роздільник
         foreach ($delimiters as $d) {
             $fields = str_getcsv($firstLine, $d);
             if (count($fields) > $maxCount) {
@@ -283,14 +334,15 @@ class ProductImportController extends Controller
         return $detected;
     }
 
+    /**
+     * Очищує та форматує значення для числових полів
+     */
     private function cleanValue($value, $field)
     {
         switch ($field) {
             case 'purchase_price':
             case 'sale_price':
-                // Видаляємо всі нецифрові символи крім крапки та коми
                 $cleaned = preg_replace('/[^0-9.,\-]/', '', $value);
-                // Замінюємо коми на крапки для float
                 $cleaned = str_replace(',', '.', $cleaned);
                 return is_numeric($cleaned) ? (float)$cleaned : null;
             case 'quantity':
@@ -301,6 +353,9 @@ class ProductImportController extends Controller
         }
     }
 
+    /**
+     * Розрахунок ціни для товару (за замовчуванням — якщо не вказано sale_price)
+     */
     private function calculatePrice(array $productData)
     {
         if (isset($productData['sale_price']) && is_numeric($productData['sale_price'])) {
@@ -312,6 +367,9 @@ class ProductImportController extends Controller
         return 0;
     }
 
+    /**
+     * Генерує унікальний SKU
+     */
     private function generateUniqueSku($supplierCode = null)
     {
         $prefix = 'SKU';
