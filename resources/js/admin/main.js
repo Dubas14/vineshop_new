@@ -9,10 +9,7 @@ import { useAuthStore } from './stores/auth'
 import { createI18n } from 'vue-i18n'
 import messages from '../lang/messages'
 
-const getCookie = (name) => {
-    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-    return match ? decodeURIComponent(match[1]) : null;
-};
+import { getCookie } from '../utils/cookies'
 
 const app = createApp(AdminApp)
 const pinia = createPinia()
