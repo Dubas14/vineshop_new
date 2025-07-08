@@ -80,9 +80,11 @@ class ProductImageImportController extends Controller
                     ProductImage::where('product_id', $product->id)
                         ->where('path', $storagePath)
                         ->delete();
-                } elseif (ProductImage::where('product_id', $product->id)
+                } elseif (
+                    ProductImage::where('product_id', $product->id)
                     ->where('path', $storagePath)
-                    ->exists()) {
+                    ->exists()
+                ) {
                     $skipped[] = $barcodeValue . ' ' . __('messages.image_already_exists');
                     continue;
                 }
