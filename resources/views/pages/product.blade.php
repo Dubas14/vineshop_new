@@ -7,9 +7,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 @php
-                    $main = $product->image ?? optional($product->images->first())->path;
+                    if ($product->image) {
+                        $main = asset('storage/' . $product->image);
+                    } elseif ($product->images->first()) {
+                        $main = asset('storage/' . $product->images->first()->path);
+                    } else {
+                        $main = asset('images/no-image.png'); // важливо: файл no-image.png має бути у public/images/
+                    }
                 @endphp
-                <img id="main-image" src="{{ asset('storage/' . $main) }}" alt="{{ $product->name }}" class="rounded-lg shadow max-w-md max-h-96 object-contain mx-auto">
+
+                <img id="main-image" src="{{ $main }}" alt="{{ $product->name }}" class="rounded-lg shadow max-w-md max-h-96 object-contain mx-auto">
 
                 @if($product->images->count())
                     <div class="flex gap-2 mt-4">

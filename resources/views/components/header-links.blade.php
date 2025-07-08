@@ -71,8 +71,8 @@
 
 {{-- Переключение языка --}}
 <div class="flex space-x-1 mt-2 md:mt-0" x-data>
-    <a href="#" @click.prevent="localStorage.setItem('locale','uk'); location.reload();"
+    <a href="#" @click.prevent="document.cookie = 'locale=uk'; localStorage.setItem('locale','uk'); location.reload();"
        class="text-sm">UA</a>
-    <a href="#" @click.prevent="localStorage.setItem('locale','en'); location.reload();"
+    <a href="#" @click.prevent="document.cookie = 'locale=en'; localStorage.setItem('locale','en'); location.reload();"
        class="text-sm">EN</a>
 </div>
