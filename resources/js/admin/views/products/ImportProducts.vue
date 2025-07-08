@@ -1,10 +1,10 @@
 <template>
     <div class="max-w-6xl mx-auto p-4">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Імпорт товарів з CSV</h2>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">{{ t('import_csv.title') }}</h2>
 
         <div class="bg-white rounded-lg shadow p-6 mb-6">
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Виберіть CSV файл</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('import_csv.choose_file') }}</label>
                 <input
                     type="file"
                     @change="onFileChange"
@@ -20,11 +20,11 @@
 
             <div v-if="isLoading" class="text-center py-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                <p class="mt-2 text-gray-600">Обробка файлу...</p>
+                <p class="mt-2 text-gray-600">{{ t('import_csv.processing') }}</p>
             </div>
 
             <div v-if="previewData" class="mt-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-700">Налаштування імпорту</h3>
+                <h3 class="text-lg font-semibold mb-4 text-gray-700">{{ t('import_csv.settings') }}</h3>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full border-collapse border border-gray-200">
@@ -39,7 +39,7 @@
                                     v-model="mapping[idx]"
                                     class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 >
-                                    <option value="">-- Не імпортувати --</option>
+                                    <option value="">{{ t('import_csv.dont_import') }}</option>
                                     <option
                                         v-for="opt in fieldOptions"
                                         :key="opt.value"
@@ -81,14 +81,14 @@
                         :disabled="isImporting || !hasRequiredFields"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-            <span v-if="isImporting">
-              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Імпорт...
-            </span>
-                        <span v-else>Почати імпорт</span>
+                        <span v-if="isImporting">
+                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            {{ t('import_csv.importing') }}
+                        </span>
+                        <span v-else>{{ t('import_csv.start_import') }}</span>
                     </button>
                 </div>
             </div>
@@ -96,7 +96,7 @@
 
         <!-- Результати імпорту -->
         <div v-if="importResult" class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-4 text-gray-700">Результати імпорту</h3>
+            <h3 class="text-lg font-semibold mb-4 text-gray-700">{{ t('import_csv.result_title') }}</h3>
 
             <div v-if="importResult.success" class="mb-4">
                 <div class="p-4 bg-green-50 border-l-4 border-green-400">
@@ -108,8 +108,8 @@
                         </div>
                         <div class="ml-3">
                             <p class="text-sm text-green-700">
-                                {{ importResult.message }}
-                                <span v-if="importResult.count">(Імпортовано: {{ importResult.count }} товарів)</span>
+                                {{ t('import_csv.import_success') }}
+                                <span v-if="importResult.count">({{ t('import_csv.imported', { count: importResult.count }) }})</span>
                             </p>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
             </div>
 
             <div v-if="importResult.errors?.length" class="mt-4">
-                <h4 class="text-sm font-medium text-gray-700 mb-2">Помилки при імпорті:</h4>
+                <h4 class="text-sm font-medium text-gray-700 mb-2">{{ t('import_csv.errors_title') }}</h4>
                 <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
                     <li v-for="(error, idx) in importResult.errors" :key="idx" class="p-3 text-sm text-red-600">
                         {{ error }}
@@ -144,10 +144,10 @@
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref, computed } from 'vue'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
 
 const file = ref(null)
 const isLoading = ref(false)
@@ -155,19 +155,20 @@ const isImporting = ref(false)
 const previewData = ref(null)
 const mapping = ref([])
 const importResult = ref(null)
+const { t } = useI18n()
 
 const fieldOptions = [
-    { value: 'barcode', label: 'Штрихкод (обов\'язково)' },
-    { value: 'name', label: 'Назва товару (обов\'язково)' },
-    { value: 'supplier_code', label: 'Код постачальника' },
-    { value: 'country', label: 'Країна' },
-    { value: 'manufacturer', label: 'Виробник' },
-    { value: 'brand', label: 'Бренд' },
-    { value: 'purchase_price', label: 'Закупівельна ціна' },
-    { value: 'sale_price', label: 'Ціна продажу' },
-    { value: 'quantity', label: 'Кількість' },
-    { value: 'multiplicity', label: 'Кратність' },
-    { value: 'category_id', label: 'Категорія' },
+    { value: 'barcode', label: t('import_csv.required_barcode') },
+    { value: 'name', label: t('import_csv.required_name') },
+    { value: 'supplier_code', label: t('import_csv.supplier_code') },
+    { value: 'country', label: t('import_csv.country') },
+    { value: 'manufacturer', label: t('import_csv.manufacturer') },
+    { value: 'brand', label: t('import_csv.brand') },
+    { value: 'purchase_price', label: t('import_csv.purchase_price') },
+    { value: 'sale_price', label: t('import_csv.sale_price') },
+    { value: 'quantity', label: t('import_csv.quantity') },
+    { value: 'multiplicity', label: t('import_csv.multiplicity') },
+    { value: 'category_id', label: t('import_csv.category_id') },
 ]
 
 const hasRequiredFields = computed(() => {

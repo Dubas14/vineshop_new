@@ -211,7 +211,33 @@ export default {
             "submit": "Імпортувати",
             "reset": "Очистити"
         },
-        "import_images": "Імпорт зображень"
+        "import_images": "Імпорт зображень",
+        "import_csv": {
+            "title": "Імпорт товарів з CSV",
+            "choose_file": "Виберіть CSV файл",
+            "processing": "Обробка файлу...",
+            "settings": "Налаштування імпорту",
+            "dont_import": "-- Не імпортувати --",
+            "start_import": "Почати імпорт",
+            "importing": "Імпорт...",
+            "result_title": "Результати імпорту",
+            "imported": "Імпортовано: {count} товарів",
+            "import_success": "Імпорт успішно завершено",
+            "errors_title": "Помилки при імпорті:",
+            "required_barcode": "Штрихкод (обов'язково)",
+            "required_name": "Назва товару (обов'язково)",
+            "supplier_code": "Код постачальника",
+            "country": "Країна",
+            "manufacturer": "Виробник",
+            "brand": "Бренд",
+            "purchase_price": "Закупівельна ціна",
+            "sale_price": "Ціна продажу",
+            "quantity": "Кількість",
+            "multiplicity": "Кратність",
+            "category_id": "Категорія",
+            "file_read_error": "Помилка при читанні файлу",
+            "import_error": "Помилка при імпорті"
+        }
 
     },
     "en": {
@@ -421,6 +447,32 @@ export default {
             "submit": "Import",
             "reset": "Reset"
         },
-        "import_images": "Import images"
+        "import_images": "Import images",
+        "import_csv": {
+            "title": "Import products from CSV",
+            "choose_file": "Select CSV file",
+            "processing": "Processing file...",
+            "settings": "Import settings",
+            "dont_import": "-- Do not import --",
+            "start_import": "Start import",
+            "importing": "Importing...",
+            "result_title": "Import results",
+            "imported": "Imported: {count} products",
+            "import_success": "Import completed successfully",
+            "errors_title": "Import errors:",
+            "required_barcode": "Barcode (required)",
+            "required_name": "Product name (required)",
+            "supplier_code": "Supplier code",
+            "country": "Country",
+            "manufacturer": "Manufacturer",
+            "brand": "Brand",
+            "purchase_price": "Purchase price",
+            "sale_price": "Sale price",
+            "quantity": "Quantity",
+            "multiplicity": "Multiplicity",
+            "category_id": "Category",
+            "file_read_error": "File read error",
+            "import_error": "Import error"
+        }
     }
 };
