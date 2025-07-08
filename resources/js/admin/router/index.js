@@ -50,6 +50,14 @@ const routes = [
         component: () => import('@/admin/views/products/ImportProducts.vue'),
         meta: { requiresAuth: true },
     },
+
+    {
+        path: '/admin/import-images',
+        name: 'import-images',
+        component: () => import('@/admin/views/products/ImportImages.vue'),
+        meta: { requiresAuth: true } // якщо потрібна авторизація
+    },
+
     { path: '/admin/categories', name: 'categories', component: Categories },
     {
         path: '/admin/categories/create',

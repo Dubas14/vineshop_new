@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\ProductImageImportController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -16,6 +17,9 @@ Route::middleware('auth:sanctum')->get('/admin/user', [AuthController::class, 'u
 Route::get('/banners', [BannerController::class, 'public']);
 Route::post('/products/import/preview', [ProductImportController::class, 'preview']);
 Route::post('/products/import/process', [ProductImportController::class, 'import']);
+Route::post('/admin/product-images/import', [ProductImageImportController::class, 'import'])
+    ->name('admin.product-images.import');
+
 
 
 Route::middleware('web')->group(function () {
