@@ -21,3 +21,230 @@
 .products-item {
     padding: 16px;
 }
+
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #34495e;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #34495e #2c3e50;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: #34495e;
+    border-radius: 3px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    font-size: 0.95rem;
+}
+
+.sidebar-nav li a:hover {
+    background-color: #34495e;
+    color: #fff;
+    padding-left: 22px;
+}
+
+.sidebar-nav li a.router-link-exact-active {
+    background-color: #34495e;
+    color: #fff;
+    border-left: 3px solid #3498db;
+    font-weight: 500;
+}
+
+.sidebar-nav li a i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-footer {
+    padding: 15px;
+    border-top: 1px solid #34495e;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #e74c3c;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.logout-btn:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    transform: translateX(3px);
+}
+
+.logout-btn i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.language-switcher {
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: center;
+    gap: 8px;
+}
+
+.language-switcher button {
+    background: none;
+    border: 1px solid #34495e;
+    color: #bdc3c7;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.language-switcher button:hover {
+    background-color: #34495e;
+    color: #fff;
+}
+
+.language-switcher button.active {
+    background-color: #3498db;
+    color: #fff;
+    border-color: #3498db;
+    font-weight: 500;
+}
+
+/* Main content adjustment */
+.main-content {
+    margin-left: 250px;
+    padding: 25px;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    transition: margin-left 0.3s ease;
+}
+
+/* Icons with better visual consistency */
+.icon-dashboard::before { content: "📊"; font-size: 1.1rem; }
+.icon-products::before { content: "🍷"; font-size: 1.1rem; }
+.icon-orders::before { content: "📦"; font-size: 1.1rem; }
+.icon-categories::before { content: "🗂"; font-size: 1.1rem; }
+.icon-banners::before { content: "🖼"; font-size: 1.1rem; }
+.icon-import::before { content: "⬆️"; font-size: 1.1rem; }
+.icon-images::before { content: "📷"; font-size: 1.1rem; }
+.icon-logout::before { content: "🚪"; font-size: 1.1rem; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        overflow: hidden;
+    }
+
+    .sidebar-header h3 {
+        font-size: 0;
+    }
+
+    .sidebar-header h3::after {
+        content: "VS";
+        font-size: 1.3rem;
+    }
+
+    .sidebar-nav li a span {
+        display: none;
+    }
+
+    .sidebar-nav li a i {
+        margin-right: 0;
+        font-size: 1.3rem;
+    }
+
+    .sidebar-footer {
+        padding: 10px 5px;
+    }
+
+    .language-switcher {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logout-btn span {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 70px;
+    }
+}
+
+/* Animation for sidebar items */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.sidebar-nav li {
+    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+}
+
+.sidebar-nav li:nth-child(1) { animation-delay: 0.1s; }
+.sidebar-nav li:nth-child(2) { animation-delay: 0.15s; }
+.sidebar-nav li:nth-child(3) { animation-delay: 0.2s; }
+.sidebar-nav li:nth-child(4) { animation-delay: 0.25s; }
+.sidebar-nav li:nth-child(5) { animation-delay: 0.3s; }
+.sidebar-nav li:nth-child(6) { animation-delay: 0.35s; }
+.sidebar-nav li:nth-child(7) { animation-delay: 0.4s; }

@@ -25,29 +25,34 @@ const changeLang = async (lang) => {
 
 <template>
     <div v-if="auth.isAuthenticated" class="sidebar">
-        <!-- посилання -->
-        <ul>
-            <li><router-link to="/admin/dashboard">{{ $t('dashboard') }}</router-link></li>
-            <li><router-link to="/admin/products">{{ $t('products') }}</router-link></li>
-            <li><router-link to="/admin/orders">{{ $t('orders') }}</router-link></li>
-            <li><router-link to="/admin/categories">{{ $t('categories') }}</router-link></li>
-            <li><router-link to="/admin/banners">{{ $t('banners') }}</router-link></li>
-            <li><router-link to="/admin/import-products">{{ $t('import_products') }}</router-link></li>
-            <li><router-link to="/admin/import-images">{{ $t('import_images') }}</router-link>
-            </li>
-            <li><a href="#" @click.prevent="logout" style="color: red;">{{ $t('logout') }}</a></li>
-            <li class="mt-2">
-                <button @click="changeLang('uk')" class="mr-1" :class="{ 'font-bold': locale === 'uk' }">UA</button>
-                <button @click="changeLang('en')" :class="{ 'font-bold': locale === 'en' }">EN</button>
-            </li>
-        </ul>
+        <div class="sidebar-header">
+            <h3>VineShop Admin</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><router-link to="/admin/dashboard"><i class="icon-dashboard"></i>{{ $t('dashboard') }}</router-link></li>
+                <li><router-link to="/admin/products"><i class="icon-products"></i>{{ $t('products') }}</router-link></li>
+                <li><router-link to="/admin/orders"><i class="icon-orders"></i>{{ $t('orders') }}</router-link></li>
+                <li><router-link to="/admin/categories"><i class="icon-categories"></i>{{ $t('categories') }}</router-link></li>
+                <li><router-link to="/admin/banners"><i class="icon-banners"></i>{{ $t('banners') }}</router-link></li>
+                <li><router-link to="/admin/import-products"><i class="icon-import"></i>{{ $t('import_products') }}</router-link></li>
+                <li><router-link to="/admin/import-images"><i class="icon-images"></i>{{ $t('import_images') }}</router-link></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="language-switcher">
+                <button @click="changeLang('uk')" :class="{ active: locale === 'uk' }">UA</button>
+                <button @click="changeLang('en')" :class="{ active: locale === 'en' }">EN</button>
+            </div>
+            <a href="#" @click.prevent="logout" class="logout-btn"><i class="icon-logout"></i>{{ $t('logout') }}</a>
+        </div>
     </div>
 </template>
 
 <style scoped>
+/* Only minimal styles here, main styles in CSS file */
 .sidebar {
-    width: 200px;
-    padding: 1rem;
-    border: 1px solid red;
+    display: flex;
+    flex-direction: column;
 }
 </style>
