@@ -19,7 +19,6 @@ class DashboardController extends Controller
             'orders_this_week_count' => Order::whereBetween('created_at', [now()->startOfWeek(), now()])
                 ->count(),
             'new_customers' => User::where('created_at', '>=', now()->subWeek())->count(),
-            // 'visitors' => Visit::where('created_at', '>=', now()->startOfDay())->count(), // Якщо нема моделі Visit, заміни на 0:
             'visitors' => 0,
         ];
     }
@@ -62,7 +61,7 @@ class DashboardController extends Controller
         $data = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
-            $dayLabel = \Carbon\Carbon::parse($date)->isoFormat('dd'); // 'Пн', 'Вт', ...
+            $dayLabel = \Carbon\Carbon::parse($date)->isoFormat('dd');
             $days[] = $dayLabel;
             $order = $orders->firstWhere('date', $date);
             $data[] = $order ? $order->total : 0;
