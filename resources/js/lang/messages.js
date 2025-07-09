@@ -209,7 +209,25 @@ export default {
             "overwrite_hint": "Якщо увімкнено — старі зображення з цим іменем будуть перезаписані.",
             "processing": "Обробка...",
             "submit": "Імпортувати",
-            "reset": "Очистити"
+            "reset": "Очистити",
+            "save_success": "Збережено успішно!"
+        },
+        "clients": {
+            "title": "Клієнти",
+            "name": "Ім'я прізвище",
+            "phone": "Телефон",
+            "registration_date": "Дата реєстрації",
+            "orders_count": "К-сть замовлень",
+            "orders_sum": "Сума замовлень",
+            "action": "Дія",
+            "discount": "Знижка",
+            "delete": "Видалити",
+            "save": "Зберегти",
+            "delete_confirm": "Ви точно хочете видалити цього клієнта? Цю дію неможливо відмінити!",
+            "deleted": "Клієнта видалено!",
+            "save_success": "Знижку оновлено!",
+            "save_error": "Помилка при збереженні!",
+            "delete_error": "Помилка при видаленні!"
         },
         "import_images": "Імпорт зображень",
         "import_csv": {
@@ -473,6 +491,23 @@ export default {
             "category_id": "Category",
             "file_read_error": "File read error",
             "import_error": "Import error"
+        },
+        "clients": {
+            "title": "Clients",
+            "name": "Full Name",
+            "phone": "Phone",
+            "registration_date": "Registration Date",
+            "orders_count": "Number of Orders",
+            "orders_sum": "Total Orders Amount",
+            "action": "Action",
+            "discount": "Discount",
+            "delete": "Delete",
+            "save": "Save",
+            "delete_confirm": "Are you sure you want to delete this client? This action cannot be undone!",
+            "deleted": "Client deleted!",
+            "save_success": "Discount updated!",
+            "save_error": "Error while saving!",
+            "delete_error": "Error while deleting!"
         }
     }
 };

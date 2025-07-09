@@ -15,12 +15,12 @@ const logout = async () => {
 }
 
 const changeLang = async (lang) => {
-    locale.value = lang;
+    locale.value = lang
     try {
-        await axios.post('/api/set-locale', { locale: lang });
-        document.cookie = `locale=${lang};path=/;max-age=${60 * 60 * 24 * 365}`;
+        await axios.post('/api/set-locale', { locale: lang })
+        document.cookie = `locale=${lang};path=/;max-age=${60 * 60 * 24 * 365}`
     } catch (e) {}
-};
+}
 </script>
 
 <template>
@@ -30,35 +30,64 @@ const changeLang = async (lang) => {
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><router-link to="/admin/dashboard"><i class="icon-dashboard"></i>{{ $t('dashboard') }}</router-link></li>
-                <li><router-link to="/admin/products"><i class="icon-products"></i>{{ $t('products') }}</router-link></li>
-                <li><router-link to="/admin/orders"><i class="icon-orders"></i>{{ $t('orders') }}</router-link></li>
-                <li><router-link to="/admin/categories"><i class="icon-categories"></i>{{ $t('categories') }}</router-link></li>
-                <li><router-link to="/admin/banners"><i class="icon-banners"></i>{{ $t('banners') }}</router-link></li>
-                <li><router-link to="/admin/import-products"><i class="icon-import"></i>{{ $t('import_products') }}</router-link></li>
-                <li><router-link to="/admin/import-images"><i class="icon-images"></i>{{ $t('import_images') }}</router-link></li>
                 <li>
-                    <router-link to="/admin/clients" class="flex items-center px-4 py-2 hover:bg-gray-100">
-                        <span class="material-icons mr-3">groups</span>
-                        Клієнти
+                    <router-link to="/admin/dashboard" class="icon-dashboard">
+                        <span>{{ $t('dashboard') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/products" class="icon-products">
+                        <span>{{ $t('products') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/orders" class="icon-orders">
+                        <span>{{ $t('orders') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/categories" class="icon-categories">
+                        <span>{{ $t('categories') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/banners" class="icon-banners">
+                        <span>{{ $t('banners') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/import-products" class="icon-import">
+                        <span>{{ $t('import_products') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/import-images" class="icon-images">
+                        <span>{{ $t('import_images') }}</span>
+                    </router-link>
+                </li>
+                <li>
+                    <!-- "Клієнти" з тією ж версткою, іконка "groups" через emoji або окремий icon-клас -->
+                    <router-link to="/admin/clients" class="icon-clients">
+                        <span>{{ $t('clients.title') }}</span>
                     </router-link>
                 </li>
             </ul>
         </nav>
         <div class="sidebar-footer">
             <div class="language-switcher">
-                <button @click="changeLang('uk')" :class="{ active: locale === 'uk' }">UA</button>
-                <button @click="changeLang('en')" :class="{ active: locale === 'en' }">EN</button>
+                <button
+                    @click="changeLang('uk')"
+                    :class="{ active: locale === 'uk' }"
+                >UA</button>
+                <button
+                    @click="changeLang('en')"
+                    :class="{ active: locale === 'en' }"
+                >EN</button>
             </div>
-            <a href="#" @click.prevent="logout" class="logout-btn"><i class="icon-logout"></i>{{ $t('logout') }}</a>
+            <a href="#" @click.prevent="logout" class="logout-btn">
+                <i class="icon-logout"></i>
+                <span>{{ $t('logout') }}</span>
+            </a>
         </div>
     </div>
 </template>
-
-<style scoped>
-/* Only minimal styles here, main styles in CSS file */
-.sidebar {
-    display: flex;
-    flex-direction: column;
-}
-</style>
