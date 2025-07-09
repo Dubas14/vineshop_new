@@ -37,6 +37,12 @@ const changeLang = async (lang) => {
                 <li><router-link to="/admin/banners"><i class="icon-banners"></i>{{ $t('banners') }}</router-link></li>
                 <li><router-link to="/admin/import-products"><i class="icon-import"></i>{{ $t('import_products') }}</router-link></li>
                 <li><router-link to="/admin/import-images"><i class="icon-images"></i>{{ $t('import_images') }}</router-link></li>
+                <li>
+                    <router-link to="/admin/clients" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                        <span class="material-icons mr-3">groups</span>
+                        Клієнти
+                    </router-link>
+                </li>
             </ul>
         </nav>
         <div class="sidebar-footer">

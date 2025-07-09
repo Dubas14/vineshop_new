@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Admin\BannerController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Api\Admin\ProductImportController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/admin/logout', [AuthController::class, 'logout']);
@@ -53,4 +54,12 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
     Route::post('categories', [CategoryController::class, 'store']);
+
+
+    Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+    Route::get('stat/categories', [DashboardController::class, 'categoriesStat']);
+    Route::get('stat/orders-per-day', [DashboardController::class, 'ordersPerDay']);
+    Route::get('clients', [\App\Http\Controllers\Api\Admin\ClientController::class, 'index']);
+    Route::delete('clients/{id}', [\App\Http\Controllers\Api\Admin\ClientController::class, 'destroy']);
+    Route::put('clients/{id}', [\App\Http\Controllers\Api\Admin\ClientController::class, 'update']);
 });
