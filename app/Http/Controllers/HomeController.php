@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::limit(4)->get();
+        $categories = Category::whereNull('parent_id')->with('children.children')->get();
         $products = Product::with('images')->latest()->limit(8)->get();
         $banners = Banner::where('is_active', true)
             ->orderByDesc('created_at')
