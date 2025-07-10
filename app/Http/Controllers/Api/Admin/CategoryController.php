@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function index()
     {
         return Category::select('id', 'name', 'slug', 'created_at', 'parent_id')
-            ->with(['children' => function($q) {
+            ->with(['children' => function ($q) {
                 $q->select('id', 'name', 'slug', 'created_at', 'parent_id');
             }])
             ->whereNull('parent_id')
