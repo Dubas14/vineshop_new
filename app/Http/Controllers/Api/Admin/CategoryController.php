@@ -11,7 +11,12 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return Category::select('id', 'name', 'slug', 'created_at')->get();
+        return Category::select('id', 'name', 'slug', 'created_at', 'parent_id')
+            ->with(['children' => function ($q) {
+                $q->select('id', 'name', 'slug', 'created_at', 'parent_id');
+            }])
+            ->whereNull('parent_id')
+            ->get();
     }
 
     public function show($id)
@@ -21,28 +26,33 @@ class CategoryController extends Controller
         );
     }
 
-    // Змінено: Використання $id замість моделі
+    public function allFlat()
+    {
+        return Category::select('id', 'name', 'parent_id')->orderBy('name')->get();
+    }
+
     public function update(Request $request, $id)
     {
-        $category = Category::findOrFail($id); // Явне отримання моделі
+        $category = Category::findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9\-]+$/',
+            'slug' => 'nullable|string|max:60|unique:categories,slug',
         ]);
 
         $category->name = $validated['name'];
         $category->slug = $validated['slug'] ?? Str::slug($validated['name']);
         $category->save();
 
-        return response()->json(['message' => 'Категорію оновлено']);
+        return response()->json(['message' => 'Category updated successfully']);
     }
+
     public function destroy(Category $category)
     {
         $category->delete();
-
-        return response()->json(['message' => 'Категорію видалено']);
+        return response()->json(['message' => 'Category deleted successfully']);
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -53,10 +63,11 @@ class CategoryController extends Controller
         $category = new Category();
         $category->name = $validated['name'];
         $category->slug = $validated['slug'];
+        $category->parent_id = $request->parent_id ?? null;
         $category->save();
 
         return response()->json([
-            'message' => 'Категорію створено успішно',
+            'message' => 'Category created successfully',
             'category' => $category
         ], 201);
     }

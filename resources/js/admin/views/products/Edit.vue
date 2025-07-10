@@ -10,7 +10,6 @@
                     <input v-model="form.name" type="text"
                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('price') }}</label>
                     <input v-model="form.price" type="number"
@@ -29,8 +28,8 @@
                 <select v-model="form.category_id"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                     <option value="" disabled>{{ $t('choose_type') }}</option>
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                        {{ category.name }}
+                    <option v-for="cat in categoryOptions" :key="cat.id" :value="cat.id">
+                        {{ cat.name }}
                     </option>
                 </select>
             </div>
@@ -50,7 +49,6 @@
                         {{ $t('no_main_image') }}
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('upload_image') }}</label>
                     <div class="flex items-center gap-4">
@@ -115,15 +113,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-
 const route = useRoute()
 const router = useRouter()
+
 const form = ref({
     name: '',
     price: 0,
@@ -132,12 +130,33 @@ const form = ref({
     image: null,
     images: []
 })
+
 const imageFile = ref(null)
 const imagePreview = ref(null)
 const categories = ref([])
 const loaded = ref(false)
 const galleryFiles = ref([])
 const galleryPreviews = ref([])
+
+// Підтягуємо категорії flat (з parent_id для дерева)
+const fetchCategories = async () => {
+    const response = await axios.get('/api/admin/categories/all-flat')
+    categories.value = response.data
+}
+
+// Побудова опцій для select (з відступами по рівню)
+function buildOptions(list, parentId = null, level = 0) {
+    let options = []
+    list.filter(c => c.parent_id === parentId).forEach(cat => {
+        options.push({
+            id: cat.id,
+            name: `${'— '.repeat(level)}${cat.name}`,
+        })
+        options = options.concat(buildOptions(list, cat.id, level + 1))
+    })
+    return options
+}
+const categoryOptions = computed(() => buildOptions(categories.value))
 
 const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -202,13 +221,12 @@ const removeGalleryImage = async (id) => {
 
 const loadData = async () => {
     try {
-        const [productRes, catRes] = await Promise.all([
+        const [productRes] = await Promise.all([
             axios.get(`/api/admin/products/${route.params.id}`),
-            axios.get('/api/admin/categories')
+            fetchCategories()
         ])
 
         form.value = productRes.data
-        categories.value = catRes.data
         loaded.value = true
     } catch (error) {
         alert(t('load_data_error'))

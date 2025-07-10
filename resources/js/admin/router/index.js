@@ -6,6 +6,7 @@ import Orders from '../views/orders/Index.vue';
 import Categories from '../views/categories/Index.vue';
 import Banners from '../views/banners/Index.vue';
 import CreateProduct from '../views/products/Create.vue';
+import Clients from '../views/pages/Clients.vue'
 
 const routes = [
     { path: '/admin/login', name: 'login', component: Login },
@@ -69,10 +70,32 @@ const routes = [
         name: 'categories.edit',
         component: () => import('@/admin/views/categories/Edit.vue'),
     },
+    {
+        path: '/admin/clients',
+        component: Clients,
+        name: 'admin.clients',
+        meta: { requiresAuth: true },
+    },
+
 ];
 
 
-
+const deleteClient = async (id) => {
+    if (!confirm("Видалити клієнта?")) return;
+    await axios.delete(`/api/admin/clients/${id}`);
+    clients.value = clients.value.filter(c => c.id !== id);
+};
+const saveDiscount = async (client) => {
+    try {
+        await axios.put(`/api/admin/clients/${client.id}`, {
+            discount: client.discount,
+        });
+        // Покажи тост, наприклад:
+        alert('Знижку оновлено!');
+    } catch (e) {
+        alert('Помилка при збереженні!');
+    }
+};
 
 const router = createRouter({
     history: createWebHistory(),

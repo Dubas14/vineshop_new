@@ -44,71 +44,16 @@
             <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
 
-        <!-- Таблиця категорій -->
-        <div v-else-if="filteredCategories.length" class="bg-white rounded-xl shadow overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {{ $t('name') }}
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {{ $t('slug') }}
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {{ $t('created_at') }}
-                    </th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {{ $t('actions') }}
-                    </th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                <tr
+        <!-- Дерево категорій -->
+        <div v-else-if="filteredCategories.length" class="bg-white rounded-xl shadow overflow-hidden p-4">
+            <ul>
+                <CategoryTree
                     v-for="category in filteredCategories"
                     :key="category.id"
-                    class="hover:bg-gray-50 transition-colors"
-                >
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                                <FolderIcon class="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div class="ml-4">
-                                <div class="font-medium text-gray-900">{{ category.name }}</div>
-                                <div class="text-sm text-gray-500">ID: {{ category.id }}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {{ category.slug }}
-              </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ formatDate(category.created_at) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex justify-end space-x-3">
-                            <router-link
-                                :to="`/admin/categories/${category.id}/edit`"
-                                class="btn-icon text-blue-600 hover:bg-blue-100"
-                                :title="$t('edit')"
-                            >
-                                <PencilIcon class="h-4 w-4" />
-                            </router-link>
-                            <button
-                                @click="deleteCategory(category.id)"
-                                class="btn-icon text-red-600 hover:bg-red-100"
-                                :title="$t('delete')"
-                            >
-                                <TrashIcon class="h-4 w-4" />
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    :category="category"
+                    @refresh="fetchCategories"
+                />
+            </ul>
         </div>
 
         <!-- Пустий стан -->
@@ -168,6 +113,7 @@ import {
     XMarkIcon
 } from '@heroicons/vue/24/outline'
 import ToastNotification from "@/admin/components/ToastNotification.vue";
+import CategoryTree from './CategoryTree.vue' // Додай цей компонент
 
 const { t } = useI18n()
 const categories = ref([])
@@ -177,11 +123,11 @@ const showToast = ref(false)
 const toastMessage = ref('')
 const toastType = ref('success')
 
-// Отримання категорій
+// Отримання категорій (з деревом children)
 const fetchCategories = async () => {
     try {
         loading.value = true
-        const response = await axios.get('/api/admin/categories')
+        const response = await axios.get('/api/admin/categories?with_children=1')
         categories.value = response.data
     } catch (error) {
         showNotification(t('fetch_error'), 'error')
@@ -190,20 +136,7 @@ const fetchCategories = async () => {
     }
 }
 
-// Видалення категорії
-const deleteCategory = async (id) => {
-    if (!confirm(t('delete_category_confirm'))) return
-
-    try {
-        await axios.delete(`/api/admin/categories/${id}`)
-        await fetchCategories()
-        showNotification(t('category_deleted'), 'success')
-    } catch (error) {
-        showNotification(t('delete_error'), 'error')
-    }
-}
-
-// Функція нормалізації для пошуку
+// Пошук та фільтрація (по дереву)
 const normalizeString = (str) => {
     if (typeof str !== 'string') return ''
     return str
@@ -214,33 +147,70 @@ const normalizeString = (str) => {
         .trim();
 }
 
-// Фільтрація категорій з підтримкою кирилиці
+function buildTree(flatCategories) {
+    const map = {};
+    const roots = [];
+    flatCategories.forEach(cat => map[cat.id] = { ...cat, children: [] });
+    flatCategories.forEach(cat => {
+        if (cat.parent_id) {
+            map[cat.parent_id]?.children.push(map[cat.id]);
+        } else {
+            roots.push(map[cat.id]);
+        }
+    });
+    return roots;
+}
+
+function filterTree(list, query) {
+    if (!query) return list
+    return list
+        .map(category => {
+            const children = category.children ? filterTree(category.children, query) : []
+            const match = (
+                normalizeString(category.name).includes(query) ||
+                normalizeString(category.slug).includes(query)
+            )
+            if (match || children.length) {
+                return { ...category, children }
+            }
+            return null
+        })
+        .filter(Boolean)
+}
+
 const filteredCategories = computed(() => {
     if (!searchQuery.value) return categories.value
-
     const query = normalizeString(searchQuery.value)
-    if (!query) return categories.value
-
-    return categories.value.filter(c => {
-        const name = c.name ? normalizeString(c.name) : ''
-        const slug = c.slug ? normalizeString(c.slug) : ''
-        return name.includes(query) || slug.includes(query)
-    })
+    return filterTree(categories.value, query)
 })
 
-// Форматування дати
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' }
     return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
-// Показ сповіщень
 const showNotification = (message, type) => {
     toastMessage.value = message
     toastType.value = type
     showToast.value = true
     setTimeout(() => showToast.value = false, 3000)
 }
+const addSubcategory = async () => {
+    if (!newName.value.trim()) return;
+    const slug = newName.value.trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-') // пробіли на дефіси
+        .replace(/[^a-z0-9\-а-яіїєґ]/gi, ''); // залишаємо тільки букви, цифри, дефіс
+
+    await axios.post('/api/admin/categories', {
+        name: newName.value,
+        slug: slug,
+        parent_id: props.category.id
+    });
+    newName.value = '';
+    showInput.value = false;
+    emit('refresh');
+};
 
 onMounted(fetchCategories)
 </script>

@@ -12,27 +12,32 @@ import {
     LineElement,
     CategoryScale,
     LinearScale,
-    PointElement
+    PointElement,
+    Filler
 } from 'chart.js'
-import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 
-const { t } = useI18n()
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, Filler)
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
+const props = defineProps({
+    labels: { type: Array, required: true },
+    data: { type: Array, required: true },
+    datasetLabel: { type: String, default: 'Sales' }
+})
 
-const chartData = {
-    labels: [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')],
+const chartData = computed(() => ({
+    labels: props.labels,
     datasets: [
         {
-            label: t('sales'),
-            data: [1200, 1400, 900, 1600, 1100, 1700, 1300],
+            label: props.datasetLabel,
+            data: props.data,
             borderColor: '#3b82f6',
             backgroundColor: 'rgba(59, 130, 246, 0.2)',
             fill: true,
             tension: 0.4
         }
     ]
-}
+}))
 
 const chartOptions = {
     responsive: true,

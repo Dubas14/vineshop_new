@@ -9,9 +9,37 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     // Список замовлень
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('items')->latest()->get();
+        $query = Order::with('items');
+
+        // Фільтрація по даті
+        if ($request->date === 'today') {
+            $query->whereDate('created_at', now()->toDateString());
+        } elseif ($request->date === 'week') {
+            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        } elseif ($request->date === 'month') {
+            $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+        } elseif ($request->from || $request->to) {
+            if ($request->from) {
+                $query->whereDate('created_at', '>=', $request->from);
+            }
+            if ($request->to) {
+                $query->whereDate('created_at', '<=', $request->to);
+            }
+        }
+        if ($request->search) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                if (ctype_digit($search)) {
+                    $q->orWhere('id', $search);
+                }
+                $q->orWhere('email', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%");
+            });
+        }
+
+        $orders = $query->latest()->get();
 
         return response()->json([
             'data' => $orders->map(function ($order) {
@@ -21,11 +49,11 @@ class OrderController extends Controller
                     'email' => $order->email,
                     'status' => $order->status,
                     'total_price' => $order->items->sum(fn($item) => $item->price * $item->quantity),
+                    'created_at' => $order->created_at,
                 ];
             }),
         ]);
     }
-
     // Перегляд одного замовлення
     public function show($id)
     {

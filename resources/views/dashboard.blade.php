@@ -22,6 +22,10 @@
                 <h2 class="text-xl font-semibold mb-2">@lang('messages.your_data')</h2>
                 <p><span class="font-medium">Email:</span> {{ auth()->user()->email }}</p>
                 <p><span class="font-medium">@lang('messages.registration_date')</span> {{ auth()->user()->created_at->format('d.m.Y') }}</p>
+                <p>
+                    <span class="font-medium">@lang('messages.personal_discount')</span>
+                    {{ auth()->user()->discount ?? 0 }} %
+                </p>
             </div>
             <div class="mt-6 space-y-2">
                 <a href="{{ route('orders.index') }}" class="text-blue-600 hover:underline block">@lang('messages.my_orders')</a>

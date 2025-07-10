@@ -33,11 +33,23 @@ class OrderController extends Controller
             'user_id' => auth()->check() ? auth()->id() : null,
         ]);
 
+        // Отримати знижку користувача
+        $userDiscount = 0;
+        if (auth()->check()) {
+            $userDiscount = auth()->user()->discount ?? 0;
+        }
+
         foreach ($cart as $productId => $item) {
+            $basePrice = $item['price'];
+            $priceWithDiscount = $basePrice;
+            if ($userDiscount > 0) {
+                $priceWithDiscount = $basePrice * (1 - $userDiscount / 100);
+            }
             $order->items()->create([
                 'product_id' => $productId,
                 'quantity' => $item['quantity'],
-                'price' => $item['price'],
+                'price' => round($priceWithDiscount, 2), // Вже зі знижкою!
+                'discount' => $userDiscount,
             ]);
         }
 
