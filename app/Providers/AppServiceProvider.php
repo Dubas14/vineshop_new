@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         app()->register(\App\Providers\RouteServiceProvider::class);
 
         View::composer('partials.header', function ($view) {
-            $view->with('categories', Category::all());
+            $view->with('categories', Category::whereNull('parent_id')->with('children')->get());
         });
     }
 }

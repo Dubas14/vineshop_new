@@ -26,16 +26,20 @@ class DashboardController extends Controller
     // Дані для DonutChart: кількість товарів у кожній категорії
     public function categoriesStat()
     {
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::whereNull('parent_id')->with('children')->get();
         $labels = [];
         $data = [];
 
         foreach ($categories as $category) {
             $labels[] = $category->name;
 
-            // Сума quantity усіх order_items, де product.category_id = $category->id
-            $soldCount = \App\Models\OrderItem::whereHas('product', function ($q) use ($category) {
-                $q->where('category_id', $category->id);
+            // Ураховуємо всі товари root та дітей
+            $categoryIds = collect([$category->id])
+                ->merge($category->children->pluck('id'))
+                ->toArray();
+
+            $soldCount = \App\Models\OrderItem::whereHas('product', function ($q) use ($categoryIds) {
+                $q->whereIn('category_id', $categoryIds);
             })->sum('quantity');
 
             $data[] = $soldCount;
