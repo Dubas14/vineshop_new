@@ -255,8 +255,13 @@ export default {
             "category_id": "Категорія",
             "file_read_error": "Помилка при читанні файлу",
             "import_error": "Помилка при імпорті"
-        }
-
+        },
+        "all": "Всі",
+        "today": "Сьогодні",
+        "this_week": "Цього тижня",
+        "this_month": "Цього місяця",
+        "choose_range": "Вибрати діапазон",
+        "filter": "Фільтрувати",
     },
     "en": {
         "home": "Home",
