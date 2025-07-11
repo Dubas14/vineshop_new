@@ -15,10 +15,12 @@ class CatalogController extends Controller
 
         // Фільтрація за slug
         if ($request->has('category')) {
-            $category = Category::where('slug', $request->category)->first();
+            $category = Category::with('children')->where('slug', $request->category)->first();
 
             if ($category) {
-                $query->where('category_id', $category->id);
+                // Отримуємо всі ID підкатегорій, включаючи поточну
+                $categoryIds = $this->getAllCategoryIds($category);
+                $query->whereIn('category_id', $categoryIds);
             } else {
                 // Якщо slug не знайдено — відобразити пустий результат
                 return view('pages.catalog', [
@@ -35,14 +37,27 @@ class CatalogController extends Controller
             'category' => $category,
         ]);
     }
+
+    // Якщо використовуєш byCategory — теж рекурсивно:
     public function byCategory($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::with('children')->findOrFail($id);
+        $categoryIds = $this->getAllCategoryIds($category);
         $products = Product::with('images')
-            ->where('category_id', $id)
+            ->whereIn('category_id', $categoryIds)
             ->latest()
             ->paginate(12);
 
         return view('pages.catalog', compact('products', 'category'));
+    }
+
+    // Рекурсивно збирає всі id (поточної + дочірніх + онуків і т.д.)
+    private function getAllCategoryIds($category)
+    {
+        $ids = [$category->id];
+        foreach ($category->children as $child) {
+            $ids = array_merge($ids, $this->getAllCategoryIds($child));
+        }
+        return $ids;
     }
 }
