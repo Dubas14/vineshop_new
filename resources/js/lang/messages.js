@@ -262,6 +262,7 @@ export default {
         "this_month": "Цього місяця",
         "choose_range": "Вибрати діапазон",
         "filter": "Фільтрувати",
+        'search_products_placeholder': 'Пошук товарів...',
     },
     "en": {
         "home": "Home",
