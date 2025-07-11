@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Product::with('images')->get();
+        $products = Product::with('images')
+            ->orderByDesc('id')
+            ->paginate(15); // або скільки хочеш на сторінку
+
+        return response()->json($products);
     }
 
     public function store(Request $request)

@@ -31,7 +31,6 @@
                 <XMarkIcon class="w-5 h-5" />
             </button>
         </div>
-
         <!-- Інформація про результати пошуку -->
         <div v-if="searchQuery && !loading" class="mb-4 text-sm text-gray-600">
             {{ $t('search_results', { count: filteredProducts.length, query: searchQuery }) }}
@@ -102,6 +101,19 @@
                 </tbody>
             </table>
         </div>
+        <!-- ПАГІНАЦІЯ -->
+        <div class="flex justify-center my-6" v-if="pagination.last_page > 1">
+            <button
+                v-for="page in pagination.last_page"
+                :key="page"
+                :class="[
+            'px-3 py-1 mx-1 rounded',
+            page === pagination.current_page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+        ]"
+                @click="fetchProducts(page)"
+                :disabled="page === pagination.current_page"
+            >{{ page }}</button>
+        </div>
 
         <!-- Пустий стан -->
         <div v-else class="text-center py-16 bg-white rounded-xl shadow">
@@ -152,14 +164,25 @@ const { t } = useI18n()
 const products = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
+const pagination = ref({
+    current_page: 1,
+    last_page: 1,
+    per_page: 20,
+    total: 0,
+})
 
-// Отримання списку товарів з API
-const fetchProducts = async () => {
+// Головна зміна: fetchProducts приймає page (номер сторінки)
+const fetchProducts = async (page = 1) => {
     try {
         loading.value = true
-        const response = await axios.get('/api/admin/products')
-        // Підлаштуй під свою структуру, якщо треба (data або data.data)
-        products.value = response.data.data ?? response.data
+        const response = await axios.get(`/api/admin/products?page=${page}`)
+        products.value = response.data.data
+        pagination.value = {
+            current_page: response.data.current_page,
+            last_page: response.data.last_page,
+            per_page: response.data.per_page,
+            total: response.data.total
+        }
     } finally {
         loading.value = false
     }
@@ -169,22 +192,11 @@ const fetchProducts = async () => {
 const deleteProduct = async (id) => {
     if (confirm(t('delete_product_confirm'))) {
         await axios.delete(`/api/admin/products/${id}`)
-        await fetchProducts()
+        await fetchProducts(pagination.value.current_page)
     }
 }
 
-// 🔧 Отримання зображення продукту (логіка підтримує і images, і image)
-const getProductImage = (product) => {
-    if (product.images && product.images.length) {
-        return `/storage/${product.images[0].path}`
-    } else if (product.image) {
-        return `/storage/${product.image}`
-    } else {
-        return '/storage/no-image.png'
-    }
-}
-
-// Нормалізація строки для пошуку
+// Фільтрація по пошуку (фронт)
 const normalizeString = (str) => {
     if (typeof str !== 'string') return ''
     return str
@@ -194,8 +206,6 @@ const normalizeString = (str) => {
         .replace(/\s+/g, ' ')
         .trim()
 }
-
-// computed: фільтрований список продуктів
 const filteredProducts = computed(() => {
     if (!searchQuery.value) return products.value
 
@@ -210,7 +220,18 @@ const filteredProducts = computed(() => {
     })
 })
 
-onMounted(fetchProducts)
+// Головна картинка товару
+const getProductImage = (product) => {
+    if (product.images && product.images.length) {
+        return `/storage/${product.images[0].path}`
+    } else if (product.image) {
+        return `/storage/${product.image}`
+    } else {
+        return '/storage/no-image.png'
+    }
+}
+
+onMounted(() => fetchProducts())
 </script>
 
 <style scoped>

@@ -72,6 +72,18 @@
             </tbody>
         </table>
     </div>
+    <div class="flex justify-center my-6" v-if="pagination.last_page > 1">
+        <button
+            v-for="page in pagination.last_page"
+            :key="page"
+            :class="[
+            'px-3 py-1 mx-1 rounded',
+            page === pagination.current_page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+        ]"
+            @click="fetchOrders(page)"
+            :disabled="page === pagination.current_page"
+        >{{ page }}</button>
+    </div>
 </template>
 
 <script setup>
@@ -83,9 +95,15 @@ const dateFilter = ref('all')
 const dateRange = ref({ from: '', to: '' })
 const search = ref('')
 
+const pagination = ref({
+    current_page: 1,
+    last_page: 1,
+    per_page: 20,
+    total: 0,
+})
 
-const fetchOrders = async () => {
-    let params = {}
+const fetchOrders = async (page = 1) => {
+    let params = { page }
 
     if (dateFilter.value === 'today') {
         params.date = 'today'
@@ -102,7 +120,13 @@ const fetchOrders = async () => {
     }
 
     const response = await axios.get('/api/admin/orders', { params })
-    orders.value = response.data.data ?? response.data;
+    orders.value = response.data.data
+    pagination.value = {
+        current_page: response.data.current_page,
+        last_page: response.data.last_page,
+        per_page: response.data.per_page,
+        total: response.data.total
+    }
 }
 
 const formatDate = (dt) => {
@@ -116,21 +140,20 @@ onMounted(fetchOrders)
 watch(dateFilter, () => {
     if (dateFilter.value === 'range') {
         if (dateRange.value.from && dateRange.value.to) {
-            fetchOrders()
+            fetchOrders(1)
         }
     } else {
-        fetchOrders()
+        fetchOrders(1)
     }
 })
 let searchTimeout
 watch(search, () => {
     clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(fetchOrders, 300)
+    searchTimeout = setTimeout(() => fetchOrders(1), 300)
 })
-
 watch(dateRange, (val) => {
     if (dateFilter.value === 'range' && val.from && val.to) {
-        fetchOrders()
+        fetchOrders(1)
     }
 }, { deep: true })
 </script>
