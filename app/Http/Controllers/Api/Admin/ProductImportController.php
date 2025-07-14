@@ -173,7 +173,10 @@ class ProductImportController extends Controller
                             ['slug' => $slug]
                         );
                         $productData['category_id'] = $cat->id;
-                    } elseif (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity', 'volume', 'old_price'])) {
+                    } elseif (
+                        in_array($field, ['purchase_price', 'sale_price',
+                        'quantity', 'multiplicity', 'volume', 'old_price'])
+                    ) {
                         $productData[$field] = $this->cleanValue($value, $field);
                     } else {
                         $productData[$field] = $value;
@@ -197,7 +200,10 @@ class ProductImportController extends Controller
                 }
                 // Перевірка числових полів
                 $numericErrors = [];
-                foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity', 'volume', 'old_price'] as $field) {
+                foreach (
+                    ['purchase_price', 'sale_price', 'quantity', '
+                multiplicity', 'volume', 'old_price'] as $field
+                ) {
                     if (isset($productData[$field]) && $productData[$field] !== null && $productData[$field] !== '') {
                         if (!is_numeric($productData[$field])) {
                             $numericErrors[] = $field;
