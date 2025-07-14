@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
 import Login from '../views/Login.vue';
 import Products from '../views/products/Index.vue';
 import Orders from '../views/orders/Index.vue';
@@ -56,7 +55,7 @@ const routes = [
         path: '/admin/import-images',
         name: 'import-images',
         component: () => import('@/admin/views/products/ImportImages.vue'),
-        meta: { requiresAuth: true } // якщо потрібна авторизація
+        meta: { requiresAuth: true }
     },
 
     { path: '/admin/categories', name: 'categories', component: Categories },

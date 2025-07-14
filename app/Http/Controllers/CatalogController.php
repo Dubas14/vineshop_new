@@ -13,16 +13,14 @@ class CatalogController extends Controller
         $query = Product::with('images');
         $category = null;
 
-        // Фільтрація за slug
+        // Фільтрація за категорією через slug (як раніше)
         if ($request->has('category')) {
             $category = Category::with('children')->where('slug', $request->category)->first();
 
             if ($category) {
-                // Отримуємо всі ID підкатегорій, включаючи поточну
                 $categoryIds = $this->getAllCategoryIds($category);
                 $query->whereIn('category_id', $categoryIds);
             } else {
-                // Якщо slug не знайдено — відобразити пустий результат
                 return view('pages.catalog', [
                     'products' => collect(),
                     'category' => null,
@@ -30,15 +28,35 @@ class CatalogController extends Controller
             }
         }
 
+        // --- ДОДАТКОВІ ФІЛЬТРИ ---
+        if ($request->filled('country')) {
+            $query->where('country', $request->input('country'));
+        }
+        if ($request->filled('manufacturer')) {
+            $query->where('manufacturer', $request->input('manufacturer'));
+        }
+        if ($request->filled('color')) {
+            $query->where('color', $request->input('color'));
+        }
+        if ($request->filled('sugar')) {
+            $query->where('sugar_content', $request->input('sugar'));
+        }
+        if ($request->filled('volume')) {
+            $query->where('volume', $request->input('volume'));
+        }
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->input('brand'));
+        }
+        // Додавай аналогічно інші параметри (type, region, etc.)
+
         $products = $query->latest()->paginate(12);
 
         return view('pages.catalog', [
             'products' => $products,
             'category' => $category,
+            // можливо, сюди ж повернути request()->all() для відображення активних фільтрів
         ]);
     }
-
-    // Якщо використовуєш byCategory — теж рекурсивно:
     public function byCategory($id)
     {
         $category = Category::with('children')->findOrFail($id);

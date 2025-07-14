@@ -16,10 +16,10 @@ import Sidebar from './components/Sidebar.vue';
     display: flex;
 }
 
-/* Головна частина, не залазить під sidebar */
+
 .main-content {
     flex: 1;
-    margin-left: 250px;    /* = width sidebar */
+    margin-left: 250px;
     padding: 25px;
     min-height: 100vh;
     background-color: #f5f7fa;
