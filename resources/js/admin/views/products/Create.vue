@@ -149,6 +149,19 @@ const imagePreview = ref(null)
 const galleryFiles = ref([])
 const galleryPreviews = ref([])
 
+// Додаємо числове поле як null, якщо воно порожнє або не є числом
+const appendNullableNumber = (fd, key, value) => {
+    if (
+        value !== '' &&
+        value !== null &&
+        value !== undefined &&
+        !isNaN(value)
+    ) {
+        fd.append(key, value)
+    }
+    // Якщо поле не задане, НЕ додавай у FormData!
+}
+
 const categories = ref([])
 
 onMounted(async () => {
@@ -202,12 +215,12 @@ const handleSubmit = async () => {
         formData.append('package_type', form.value.package_type)
         formData.append('color', form.value.color)
         formData.append('sugar_content', form.value.sugar_content)
-        formData.append('volume', form.value.volume)
+        appendNullableNumber(formData, 'volume', form.value.volume)
         formData.append('sort', form.value.sort)
         formData.append('taste', form.value.taste)
         formData.append('aroma', form.value.aroma)
         formData.append('pairing', form.value.pairing)
-        formData.append('old_price', form.value.old_price)
+        appendNullableNumber(formData, 'old_price', form.value.old_price)
         if (imageFile.value) {
             formData.append('image', imageFile.value)
         }

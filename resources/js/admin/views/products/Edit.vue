@@ -216,6 +216,18 @@ const loaded = ref(false)
 const galleryFiles = ref([])
 const galleryPreviews = ref([])
 
+// Додаємо числове поле як null, якщо воно порожнє або не є числом
+const appendNullableNumber = (fd, key, value) => {
+    if (
+        value !== '' &&
+        value !== null &&
+        value !== undefined &&
+        !isNaN(value)
+    ) {
+        fd.append(key, value)
+    }
+    // якщо поле пусте/некоректне — НЕ додавай нічого!
+}
 // Підтягуємо категорії flat (з parent_id для дерева)
 const fetchCategories = async () => {
     const response = await axios.get('/api/admin/categories/all-flat')
@@ -329,23 +341,14 @@ const handleSubmit = async () => {
         formData.append('package_type', form.value.package_type)
         formData.append('color', form.value.color)
         formData.append('sugar_content', form.value.sugar_content)
-        formData.append('volume', form.value.volume)
         formData.append('sort', form.value.sort)
         formData.append('taste', form.value.taste)
         formData.append('aroma', form.value.aroma)
         formData.append('pairing', form.value.pairing)
 
-        // Коректно обробляємо old_price (порожнє поле — це null)
-        if (
-            form.value.old_price !== '' &&
-            form.value.old_price !== null &&
-            form.value.old_price !== undefined &&
-            !isNaN(form.value.old_price)
-        ) {
-            formData.append('old_price', form.value.old_price)
-        } else {
-            formData.append('old_price', null)
-        }
+        // ✅ Додаєш nullable number тільки ОДИН РАЗ:
+        appendNullableNumber(formData, 'old_price', form.value.old_price)
+        appendNullableNumber(formData, 'volume', form.value.volume)
 
         if (imageFile.value) {
             formData.append('image', imageFile.value)

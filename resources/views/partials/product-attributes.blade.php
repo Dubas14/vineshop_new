@@ -1,71 +1,100 @@
-<div class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm mb-6">
-    @if(!empty($product->category?->name))
-        <div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm mb-6">
+    {{-- Категорія --}}
+    @if($product->category?->name)
+        <div class="py-1 border-b border-gray-100">
             <b>Категорія:</b>
             <a href="{{ route('catalog.byCategory', $product->category->id) }}"
-               class="text-blue-700 underline hover:text-blue-900">{{ $product->category->name }}</a>
-        </div>
-    @endif
-    @if(!empty($product->country))
-        <div>
-            <b>Країна:</b>
-            <a href="{{ route('catalog', ['country' => $product->country]) }}"
-               class="text-blue-700 underline hover:text-blue-900">{{ $product->country }}</a>
-        </div>
-    @endif
-    @if(!empty($product->volume))
-        <div>
-            <b>Обʼєм:</b> {{ $product->volume }} мл
-        </div>
-    @endif
-    @if(!empty($product->brand))
-            <div>
-                <b>Бренд:</b>
-                <a href="{{ route('catalog', ['brand' => $product->brand]) }}"
-                   class="text-blue-700 underline hover:text-blue-900">{{ $product->brand }}</a>
-            </div>
-    @endif
-    @if(!empty($product->classification))
-        <div>
-            <b>Класифікація:</b> {{ $product->classification }}
-        </div>
-    @endif
-    @if(!empty($product->manufacturer))
-        <div>
-            <b>Виробник:</b>
-            <a href="{{ route('catalog', ['manufacturer' => $product->manufacturer]) }}"
-               class="text-blue-700 underline hover:text-blue-900">{{ $product->manufacturer }}</a>
-        </div>
-    @endif
-    @if(!empty($product->region))
-        <div>
-            <b>Регіон, субрегіон:</b> {{ $product->region }}
-        </div>
-    @endif
-    @if(!empty($product->type))
-        <div>
-            <b>Тип:</b> {{ $product->type }}
-        </div>
-    @endif
-    @if(!empty($product->package_type))
-        <div>
-            <b>Тип упаковки:</b> {{ $product->package_type }}
-        </div>
-    @endif
-    @if(!empty($product->sugar_content))
-        <div>
-            <b>Вміст цукру:</b>
-            <a href="{{ route('catalog', ['sugar' => $product->sugar_content]) }}"
-               class="text-blue-700 underline hover:text-blue-900">{{ $product->sugar_content }}</a>
-        </div>
-    @endif
-    @if(!empty($product->color))
-        <div>
-            <b>Колір:</b>
-            <a href="{{ route('catalog', ['color' => $product->color]) }}"
-               class="text-blue-700 underline hover:text-blue-900">{{ $product->color }}</a>
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->category->name }}
+            </a>
         </div>
     @endif
 
-    {{-- Додавай інші поля аналогічно --}}
+    {{-- Країна --}}
+    @if($product->country)
+        <div class="py-1 border-b border-gray-100">
+            <b>Країна:</b>
+            <a href="{{ route('catalog', ['country' => urlencode($product->country)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->country }}
+            </a>
+        </div>
+    @endif
+
+    {{-- Бренд --}}
+    @if($product->brand)
+        <div class="py-1 border-b border-gray-100">
+            <b>Бренд:</b>
+            <a href="{{ route('catalog', ['brand' => urlencode($product->brand)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->brand }}
+            </a>
+        </div>
+    @endif
+
+    {{-- Виробник --}}
+    @if($product->manufacturer)
+        <div class="py-1 border-b border-gray-100">
+            <b>Виробник:</b>
+            <a href="{{ route('catalog', ['manufacturer' => urlencode($product->manufacturer)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->manufacturer }}
+            </a>
+        </div>
+    @endif
+
+    {{-- Об'єм --}}
+    @if($product->volume)
+        <div class="py-1 border-b border-gray-100">
+            <b>Об'єм:</b>
+            <a href="{{ route('catalog', ['volume' => $product->volume]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->volume }} мл
+            </a>
+        </div>
+    @endif
+
+    {{-- Міцність --}}
+    @if($product->alcohol)
+        <div class="py-1 border-b border-gray-100">
+            <b>Міцність:</b>
+            <a href="{{ route('catalog', ['alcohol' => $product->alcohol]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->alcohol }}%
+            </a>
+        </div>
+    @endif
+
+    {{-- Вміст цукру --}}
+    @if($product->sugar_content)
+        <div class="py-1 border-b border-gray-100">
+            <b>Вміст цукру:</b>
+            <a href="{{ route('catalog', ['sugar_content' => urlencode($product->sugar_content)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->sugar_content }}
+            </a>
+        </div>
+    @endif
+
+    {{-- Колір --}}
+    @if($product->color)
+        <div class="py-1 border-b border-gray-100">
+            <b>Колір:</b>
+            <a href="{{ route('catalog', ['color' => urlencode($product->color)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->color }}
+            </a>
+        </div>
+    @endif
+
+    {{-- Тип --}}
+    @if($product->type)
+        <div class="py-1 border-b border-gray-100">
+            <b>Тип:</b>
+            <a href="{{ route('catalog', ['type' => urlencode($product->type)]) }}"
+               class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
+                {{ $product->type }}
+            </a>
+        </div>
+    @endif
 </div>
