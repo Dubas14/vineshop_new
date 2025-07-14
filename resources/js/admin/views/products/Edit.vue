@@ -33,6 +33,69 @@
                     </option>
                 </select>
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('brand') }}</label>
+                <input v-model="form.brand" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('manufacturer') }}</label>
+                <input v-model="form.manufacturer" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('country') }}</label>
+                <input v-model="form.country" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('region') }}</label>
+                <input v-model="form.region" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('classification') }}</label>
+                <input v-model="form.classification" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('type') }}</label>
+                <input v-model="form.type" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('package_type') }}</label>
+                <input v-model="form.package_type" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('color') }}</label>
+                <input v-model="form.color" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('sugar_content') }}</label>
+                <input v-model="form.sugar_content" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('volume') }}</label>
+                <input v-model="form.volume" type="number" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('sort') }}</label>
+                <input v-model="form.sort" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('taste') }}</label>
+                <input v-model="form.taste" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('aroma') }}</label>
+                <input v-model="form.aroma" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('pairing') }}</label>
+                <input v-model="form.pairing" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('old_price') }}</label>
+                <input v-model="form.old_price"
+                       type="number"
+                       step="0.01"
+                       class="w-full border px-3 py-2 rounded">
+            </div>
 
             <!-- Головне зображення -->
             <div class="space-y-4">
@@ -128,7 +191,22 @@ const form = ref({
     description: '',
     category_id: '',
     image: null,
-    images: []
+    images: [],
+    brand: '',
+    manufacturer: '',
+    country: '',
+    region: '',
+    classification: '',
+    type: '',
+    package_type: '',
+    color: '',
+    sugar_content: '',
+    volume: '',
+    sort: '',
+    taste: '',
+    aroma: '',
+    pairing: '',
+    old_price: ''
 })
 
 const imageFile = ref(null)
@@ -242,6 +320,32 @@ const handleSubmit = async () => {
         formData.append('price', form.value.price)
         formData.append('description', form.value.description || '')
         formData.append('category_id', form.value.category_id)
+        formData.append('brand', form.value.brand)
+        formData.append('manufacturer', form.value.manufacturer)
+        formData.append('country', form.value.country)
+        formData.append('region', form.value.region)
+        formData.append('classification', form.value.classification)
+        formData.append('type', form.value.type)
+        formData.append('package_type', form.value.package_type)
+        formData.append('color', form.value.color)
+        formData.append('sugar_content', form.value.sugar_content)
+        formData.append('volume', form.value.volume)
+        formData.append('sort', form.value.sort)
+        formData.append('taste', form.value.taste)
+        formData.append('aroma', form.value.aroma)
+        formData.append('pairing', form.value.pairing)
+
+        // Коректно обробляємо old_price (порожнє поле — це null)
+        if (
+            form.value.old_price !== '' &&
+            form.value.old_price !== null &&
+            form.value.old_price !== undefined &&
+            !isNaN(form.value.old_price)
+        ) {
+            formData.append('old_price', form.value.old_price)
+        } else {
+            formData.append('old_price', null)
+        }
 
         if (imageFile.value) {
             formData.append('image', imageFile.value)
@@ -271,6 +375,5 @@ const handleSubmit = async () => {
         alert(t('product_update_error'))
     }
 }
-
 onMounted(loadData)
 </script>

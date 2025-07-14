@@ -21,8 +21,10 @@ class ProductImportController extends Controller
     // Перелік полів, які можна оновлювати для існуючих товарів
     private const UPDATABLE_FIELDS = [
         'supplier_code', 'name', 'country', 'manufacturer', 'brand',
-        'purchase_price', 'sale_price', 'quantity', 'multiplicity',
-        'category_id', 'price'
+        'region', 'classification', 'type', 'package_type', 'color',
+        'sugar_content', 'volume', 'sort', 'taste', 'aroma', 'pairing',
+        'old_price', 'purchase_price', 'sale_price', 'quantity',
+        'multiplicity', 'category_id', 'price'
     ];
 
     /**
@@ -127,6 +129,18 @@ class ProductImportController extends Controller
                     'country'        => null,
                     'manufacturer'   => null,
                     'brand'          => null,
+                    'region'         => null,
+                    'classification' => null,
+                    'type'           => null,
+                    'package_type'   => null,
+                    'color'          => null,
+                    'sugar_content'  => null,
+                    'volume'         => null,
+                    'sort'           => null,
+                    'taste'          => null,
+                    'aroma'          => null,
+                    'pairing'        => null,
+                    'old_price'      => null,
                     'purchase_price' => null,
                     'sale_price'     => null,
                     'quantity'       => null,
@@ -159,7 +173,7 @@ class ProductImportController extends Controller
                             ['slug' => $slug]
                         );
                         $productData['category_id'] = $cat->id;
-                    } elseif (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity'])) {
+                    } elseif (in_array($field, ['purchase_price', 'sale_price', 'quantity', 'multiplicity', 'volume', 'old_price'])) {
                         $productData[$field] = $this->cleanValue($value, $field);
                     } else {
                         $productData[$field] = $value;
@@ -183,7 +197,7 @@ class ProductImportController extends Controller
                 }
                 // Перевірка числових полів
                 $numericErrors = [];
-                foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity'] as $field) {
+                foreach (['purchase_price', 'sale_price', 'quantity', 'multiplicity', 'volume', 'old_price'] as $field) {
                     if (isset($productData[$field]) && $productData[$field] !== null && $productData[$field] !== '') {
                         if (!is_numeric($productData[$field])) {
                             $numericErrors[] = $field;
@@ -270,6 +284,18 @@ class ProductImportController extends Controller
                         'country'        => $productData['country'],
                         'manufacturer'   => $productData['manufacturer'],
                         'brand'          => $productData['brand'],
+                        'region'         => $productData['region'],
+                        'classification' => $productData['classification'],
+                        'type'           => $productData['type'],
+                        'package_type'   => $productData['package_type'],
+                        'color'          => $productData['color'],
+                        'sugar_content'  => $productData['sugar_content'],
+                        'volume'         => $productData['volume'],
+                        'sort'           => $productData['sort'],
+                        'taste'          => $productData['taste'],
+                        'aroma'          => $productData['aroma'],
+                        'pairing'        => $productData['pairing'],
+                        'old_price'      => $productData['old_price'],
                         'purchase_price' => $productData['purchase_price'] ?? 0,
                         'sale_price'     => $productData['sale_price'] ?? 0,
                         'price'          => $productData['price'] ?? 0,
@@ -345,12 +371,17 @@ class ProductImportController extends Controller
         switch ($field) {
             case 'purchase_price':
             case 'sale_price':
+            case 'old_price':
                 $cleaned = preg_replace('/[^0-9.,\-]/', '', $value);
                 $cleaned = str_replace(',', '.', $cleaned);
                 return is_numeric($cleaned) ? (float)$cleaned : null;
             case 'quantity':
             case 'multiplicity':
                 return (int) preg_replace('/[^0-9\-]/', '', $value);
+            case 'volume':
+                $cleaned = preg_replace('/[^0-9.,]/', '', $value);
+                $cleaned = str_replace(',', '.', $cleaned);
+                return is_numeric($cleaned) ? (float)$cleaned : null;
             default:
                 return $value;
         }
