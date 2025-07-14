@@ -13,14 +13,14 @@ class CatalogController extends Controller
         $query = Product::with('images');
         $category = null;
 
-        // Фільтрація за slug
+        // Фільтрація за категорією через slug (як раніше)
         if ($request->has('category')) {
-            $category = Category::where('slug', $request->category)->first();
+            $category = Category::with('children')->where('slug', $request->category)->first();
 
             if ($category) {
-                $query->where('category_id', $category->id);
+                $categoryIds = $this->getAllCategoryIds($category);
+                $query->whereIn('category_id', $categoryIds);
             } else {
-                // Якщо slug не знайдено — відобразити пустий результат
                 return view('pages.catalog', [
                     'products' => collect(),
                     'category' => null,
@@ -28,21 +28,54 @@ class CatalogController extends Controller
             }
         }
 
+        // --- ДОДАТКОВІ ФІЛЬТРИ ---
+        if ($request->filled('country')) {
+            $query->where('country', $request->input('country'));
+        }
+        if ($request->filled('manufacturer')) {
+            $query->where('manufacturer', $request->input('manufacturer'));
+        }
+        if ($request->filled('color')) {
+            $query->where('color', $request->input('color'));
+        }
+        if ($request->filled('sugar')) {
+            $query->where('sugar_content', $request->input('sugar'));
+        }
+        if ($request->filled('volume')) {
+            $query->where('volume', $request->input('volume'));
+        }
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->input('brand'));
+        }
+        // Додавай аналогічно інші параметри (type, region, etc.)
+
         $products = $query->latest()->paginate(12);
 
         return view('pages.catalog', [
             'products' => $products,
             'category' => $category,
+            // можливо, сюди ж повернути request()->all() для відображення активних фільтрів
         ]);
     }
     public function byCategory($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::with('children')->findOrFail($id);
+        $categoryIds = $this->getAllCategoryIds($category);
         $products = Product::with('images')
-            ->where('category_id', $id)
+            ->whereIn('category_id', $categoryIds)
             ->latest()
             ->paginate(12);
 
         return view('pages.catalog', compact('products', 'category'));
+    }
+
+    // Рекурсивно збирає всі id (поточної + дочірніх + онуків і т.д.)
+    private function getAllCategoryIds($category)
+    {
+        $ids = [$category->id];
+        foreach ($category->children as $child) {
+            $ids = array_merge($ids, $this->getAllCategoryIds($child));
+        }
+        return $ids;
     }
 }

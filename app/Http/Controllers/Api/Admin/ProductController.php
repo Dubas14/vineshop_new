@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Product::with('images')->get();
+        $products = Product::with('images')
+            ->orderByDesc('id')
+            ->paginate(15); // або скільки хочеш на сторінку
+
+        return response()->json($products);
     }
 
     public function store(Request $request)
@@ -25,6 +29,21 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'image' => 'required|image|max:2048',
             'images.*' => 'nullable|image|max:2048',
+            'brand' => 'nullable|string|max:255',
+            'manufacturer' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
+            'classification' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'package_type' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:255',
+            'sugar_content' => 'nullable|string|max:255',
+            'volume' => 'nullable|numeric',
+            'sort' => 'nullable|string|max:255',
+            'taste' => 'nullable|string',
+            'aroma' => 'nullable|string',
+            'pairing' => 'nullable|string',
+            'old_price' => 'nullable|numeric',
         ]);
 
         // збереження головного зображення
@@ -69,6 +88,21 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|max:2048',
             'images.*' => 'nullable|image|max:2048',
+            'brand' => 'nullable|string|max:255',
+            'manufacturer' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
+            'classification' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'package_type' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:255',
+            'sugar_content' => 'nullable|string|max:255',
+            'volume' => 'nullable|numeric',
+            'sort' => 'nullable|string|max:255',
+            'taste' => 'nullable|string',
+            'aroma' => 'nullable|string',
+            'pairing' => 'nullable|string',
+            'old_price' => 'nullable|numeric',
         ]);
 
         if ($request->hasFile('image')) {

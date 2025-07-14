@@ -44,6 +44,66 @@
                     </option>
                 </select>
             </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('brand') }}</label>
+                <input v-model="form.brand" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('manufacturer') }}</label>
+                <input v-model="form.manufacturer" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('country') }}</label>
+                <input v-model="form.country" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('region') }}</label>
+                <input v-model="form.region" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('classification') }}</label>
+                <input v-model="form.classification" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('type') }}</label>
+                <input v-model="form.type" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('package_type') }}</label>
+                <input v-model="form.package_type" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('color') }}</label>
+                <input v-model="form.color" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('sugar_content') }}</label>
+                <input v-model="form.sugar_content" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('volume') }}</label>
+                <input v-model="form.volume" type="number" step="0.01" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('sort') }}</label>
+                <input v-model="form.sort" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('taste') }}</label>
+                <input v-model="form.taste" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('aroma') }}</label>
+                <input v-model="form.aroma" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('pairing') }}</label>
+                <input v-model="form.pairing" type="text" class="w-full border px-3 py-2 rounded">
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">{{ $t('old_price') }}</label>
+                <input v-model="form.old_price" type="number" step="0.01" class="w-full border px-3 py-2 rounded">
+            </div>
 
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 {{ $t('save') }}
@@ -66,7 +126,22 @@ const form = ref({
     name: '',
     price: '',
     description: '',
-    category_id: ''
+    category_id: '',
+    brand: '',
+    manufacturer: '',
+    country: '',
+    region: '',
+    classification: '',
+    type: '',
+    package_type: '',
+    color: '',
+    sugar_content: '',
+    volume: '',
+    sort: '',
+    taste: '',
+    aroma: '',
+    pairing: '',
+    old_price: ''
 })
 
 const imageFile = ref(null)
@@ -118,6 +193,21 @@ const handleSubmit = async () => {
         formData.append('price', form.value.price)
         formData.append('description', form.value.description)
         formData.append('category_id', form.value.category_id)
+        formData.append('brand', form.value.brand)
+        formData.append('manufacturer', form.value.manufacturer)
+        formData.append('country', form.value.country)
+        formData.append('region', form.value.region)
+        formData.append('classification', form.value.classification)
+        formData.append('type', form.value.type)
+        formData.append('package_type', form.value.package_type)
+        formData.append('color', form.value.color)
+        formData.append('sugar_content', form.value.sugar_content)
+        formData.append('volume', form.value.volume)
+        formData.append('sort', form.value.sort)
+        formData.append('taste', form.value.taste)
+        formData.append('aroma', form.value.aroma)
+        formData.append('pairing', form.value.pairing)
+        formData.append('old_price', form.value.old_price)
         if (imageFile.value) {
             formData.append('image', imageFile.value)
         }

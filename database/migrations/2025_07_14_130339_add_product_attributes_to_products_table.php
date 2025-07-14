@@ -4,25 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+return new class extends Migration {
+    public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            //
-            $table->string('brand')->nullable();
-            $table->string('manufacturer')->nullable();
-            $table->string('country')->nullable();
             $table->string('region')->nullable();
             $table->string('classification')->nullable();
             $table->string('type')->nullable();
             $table->string('package_type')->nullable();
             $table->string('color')->nullable();
             $table->string('sugar_content')->nullable();
-            $table->decimal('volume', 8, 2)->nullable();
+            $table->integer('volume')->nullable();
             $table->string('sort')->nullable();
             $table->text('taste')->nullable();
             $table->text('aroma')->nullable();
@@ -31,29 +23,12 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            //
             $table->dropColumn([
-                'brand',
-                'manufacturer',
-                'country',
-                'region',
-                'classification',
-                'type',
-                'package_type',
-                'color',
-                'sugar_content',
-                'volume',
-                'sort',
-                'taste',
-                'aroma',
-                'pairing',
-                'old_price',
+                'region', 'classification', 'type', 'package_type', 'color', 'sugar_content',
+                'volume', 'sort', 'taste', 'aroma', 'pairing', 'old_price'
             ]);
         });
     }

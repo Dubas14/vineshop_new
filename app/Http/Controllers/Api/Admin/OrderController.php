@@ -13,7 +13,7 @@ class OrderController extends Controller
     {
         $query = Order::with('items');
 
-        // Фільтрація по даті
+        // Фільтрація по даті (залишаєш як було)
         if ($request->date === 'today') {
             $query->whereDate('created_at', now()->toDateString());
         } elseif ($request->date === 'week') {
@@ -39,20 +39,9 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->latest()->get();
+        $orders = $query->latest()->paginate(20); // Ось тут paginate!
 
-        return response()->json([
-            'data' => $orders->map(function ($order) {
-                return [
-                    'id' => $order->id,
-                    'name' => $order->name,
-                    'email' => $order->email,
-                    'status' => $order->status,
-                    'total_price' => $order->items->sum(fn($item) => $item->price * $item->quantity),
-                    'created_at' => $order->created_at,
-                ];
-            }),
-        ]);
+        return response()->json($orders);
     }
     // Перегляд одного замовлення
     public function show($id)

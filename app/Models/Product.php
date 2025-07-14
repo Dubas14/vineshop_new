@@ -23,6 +23,18 @@ class Product extends Model
         'sale_price',
         'quantity',
         'multiplicity',
+        'region',
+        'classification',
+        'type',
+        'package_type',
+        'color',
+        'sugar_content',
+        'volume',
+        'sort',
+        'taste',
+        'aroma',
+        'pairing',
+        'old_price',
     ];
     public function category()
     {

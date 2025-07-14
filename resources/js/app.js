@@ -4,17 +4,15 @@ import { createI18n } from 'vue-i18n';
 import Cart from './admin/views/Cart.vue';
 import messages from './lang/messages';
 import { getCookie } from './utils/cookies';
-
-// --- Alpine.js ---
 import Alpine from 'alpinejs'
 window.Alpine = Alpine
 Alpine.start()
 
-// --- Swiper ---
+
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
 
-// Глобальна ініціалізація слайдера для банерів
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.mySwiperBanner')) {
         new Swiper('.mySwiperBanner', {
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             autoplay: {
                 delay: 5000,
             },
-            // ...інші налаштування
         });
     }
 });
