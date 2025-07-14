@@ -2,7 +2,7 @@
     $count = array_sum(array_column(session('cart', []), 'quantity'));
 @endphp
 
-<header class="bg-white shadow relative z-50" x-data="{ mobileOpen: false }" @close-mobile.window="mobileOpen = false">
+<header class="sticky top-0 bg-white shadow relative z-50" x-data="{ mobileOpen: false }" @close-mobile.window="mobileOpen = false">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <a href="{{ route('home') }}" class="text-xl font-bold">Vineshop</a>
 
