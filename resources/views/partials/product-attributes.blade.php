@@ -3,7 +3,7 @@
     @if($product->category?->name)
         <div class="py-1 border-b border-gray-100">
             <b>Категорія:</b>
-            <a href="{{ route('catalog.byCategory', $product->category->id) }}"
+            <a href="{{ route('catalog', ['category' => urlencode($product->category->slug)]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->category->name }}
             </a>
@@ -47,7 +47,7 @@
     @if($product->volume)
         <div class="py-1 border-b border-gray-100">
             <b>Об'єм:</b>
-            <a href="{{ route('catalog', ['volume' => $product->volume]) }}"
+            <a href="{{ route('catalog', ['volume' => urlencode($product->volume)]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->volume }} мл
             </a>
@@ -58,7 +58,7 @@
     @if($product->alcohol)
         <div class="py-1 border-b border-gray-100">
             <b>Міцність:</b>
-            <a href="{{ route('catalog', ['alcohol' => $product->alcohol]) }}"
+            <a href="{{ route('catalog', ['alcohol' => urlencode($product->alcohol)]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->alcohol }}%
             </a>
@@ -69,7 +69,7 @@
     @if($product->sugar_content)
         <div class="py-1 border-b border-gray-100">
             <b>Вміст цукру:</b>
-            <a href="{{ route('catalog', ['sugar_content' => urlencode($product->sugar_content)]) }}"
+            <a href="{{ route('catalog', ['sugar' => urlencode($product->sugar_content)]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->sugar_content }}
             </a>

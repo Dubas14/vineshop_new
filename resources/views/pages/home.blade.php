@@ -28,7 +28,13 @@
                         @endphp
                         <img src="{{ $imagePath }}" alt="{{ $product->name }}" class="w-full h-48 object-contain products-item__img">
                         <div class="p-3 space-y-1">
-                            <div class="products-item__category text-sm text-gray-500">{{ $product->category->name ?? '' }}</div>
+                            <div class="products-item__category text-sm text-gray-500">
+                                @if($product->category)
+                                    <a href="{{ route('catalog', ['category' => urlencode($product->category->slug)]) }}" class="hover:underline">
+                                        {{ $product->category->name }}
+                                    </a>
+                                @endif
+                            </div>
                             <h3 class="products-item__name text-lg font-semibold">{{ $product->name }}</h3>
                             <div class="products-item__price text-red-600 font-bold">{{ number_format($product->price, 2) }} грн</div>
                         </div>
