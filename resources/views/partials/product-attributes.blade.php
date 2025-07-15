@@ -14,7 +14,7 @@
     @if($product->country)
         <div class="py-1 border-b border-gray-100">
             <b>Країна:</b>
-            <a href="{{ route('catalog', ['country' => urlencode($product->country)]) }}"
+            <a href="{{ route('catalog', ['country' => $product->country]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->country }}
             </a>
@@ -25,7 +25,7 @@
     @if($product->brand)
         <div class="py-1 border-b border-gray-100">
             <b>Бренд:</b>
-            <a href="{{ route('catalog', ['brand' => urlencode($product->brand)]) }}"
+            <a href="{{ route('catalog', ['brand' => $product->brand]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->brand }}
             </a>
@@ -36,7 +36,7 @@
     @if($product->manufacturer)
         <div class="py-1 border-b border-gray-100">
             <b>Виробник:</b>
-            <a href="{{ route('catalog', ['manufacturer' => urlencode($product->manufacturer)]) }}"
+            <a href="{{ route('catalog', ['manufacturer' => $product->manufacturer]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->manufacturer }}
             </a>
@@ -69,7 +69,7 @@
     @if($product->sugar_content)
         <div class="py-1 border-b border-gray-100">
             <b>Вміст цукру:</b>
-            <a href="{{ route('catalog', ['sugar_content' => urlencode($product->sugar_content)]) }}"
+            <a href="{{ route('catalog', ['sugar_content' => $product->sugar_content]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->sugar_content }}
             </a>
@@ -80,7 +80,7 @@
     @if($product->color)
         <div class="py-1 border-b border-gray-100">
             <b>Колір:</b>
-            <a href="{{ route('catalog', ['color' => urlencode($product->color)]) }}"
+            <a href="{{ route('catalog', ['color' => $product->color]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->color }}
             </a>
@@ -91,7 +91,7 @@
     @if($product->type)
         <div class="py-1 border-b border-gray-100">
             <b>Тип:</b>
-            <a href="{{ route('catalog', ['type' => urlencode($product->type)]) }}"
+            <a href="{{ route('catalog', ['type' => $product->type]) }}"
                class="text-blue-600 hover:text-blue-800 underline ml-1 transition">
                 {{ $product->type }}
             </a>

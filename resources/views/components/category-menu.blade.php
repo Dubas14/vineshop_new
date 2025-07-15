@@ -16,7 +16,7 @@
          class="relative group">
 
         <!-- Основна категорія -->
-        <a href="{{ route('catalog', ['category' => urlencode($category->slug)]) }}"
+        <a href="{{ route('catalog', ['category' => $category->slug]) }}"
            @if($mobile) @click="open = !open; $event.preventDefault()" @endif
            class="flex items-center justify-between px-4 py-3 text-sm rounded-lg
                   hover:bg-gray-50 hover:text-indigo-600 transition-colors
