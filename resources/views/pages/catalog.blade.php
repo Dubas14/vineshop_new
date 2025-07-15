@@ -7,7 +7,7 @@
         <h1 class="text-2xl font-bold mb-6">
             @lang('messages.catalog')
             @isset($category)
-                — <a href="{{ route('catalog', ['category' => urlencode($category->slug)]) }}" class="hover:underline">{{ $category->name }}</a>
+                — {{ $category->name }}
             @endisset
         </h1>
         @if($products->count())

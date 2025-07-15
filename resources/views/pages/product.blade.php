@@ -8,7 +8,7 @@
         <div class="mb-4 text-sm text-gray-500">
             <a href="/">Головна</a> /
             @if($product->category) {{-- Додана перевірка наявності категорії --}}
-            <a href="{{ route('catalog', ['category' => urlencode($product->category->slug)]) }}">
+            <a href="{{ route('catalog.byCategory', $product->category->id) }}">
                 {{ $product->category->name }}
             </a> /
             @else
