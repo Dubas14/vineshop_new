@@ -9,7 +9,10 @@ class CartController extends Controller
 {
     public function add(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        // Тепер можна додати лише активний товар
+        $product = Product::where('id', $id)
+            ->where('is_active', true)
+            ->firstOrFail();
 
         $cart = session()->get('cart', []);
 
@@ -25,7 +28,6 @@ class CartController extends Controller
         }
 
         session()->put('cart', $cart);
-
 
         return redirect()->back()->with('success', 'Товар додано до кошика');
     }
