@@ -61,6 +61,9 @@
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {{ $t('actions') }}
                     </th>
+                    <th class="py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                        {{ $t('active') }}
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -96,6 +99,13 @@
                                 <TrashIcon class="h-5 w-5" />
                             </button>
                         </div>
+                    </td>
+                    <td class="py-4 text-center w-10">
+                        <input
+                            type="checkbox"
+                            :checked="!!product.is_active"
+                            @change="toggleProductActive(product)"
+                        />
                     </td>
                 </tr>
                 </tbody>
@@ -219,6 +229,19 @@ const filteredProducts = computed(() => {
         return name.includes(query) || sku.includes(query) || slug.includes(query)
     })
 })
+
+const toggleProductActive = async (product) => {
+    const newStatus = product.is_active ? 0 : 1;
+    try {
+        await axios.patch(`/api/admin/products/${product.id}/toggle-active`, {
+            is_active: newStatus
+        });
+        product.is_active = newStatus;
+    } catch (e) {
+        alert(t('update_status_error'));
+        // Можна додати повернення до попереднього стану при помилці
+    }
+};
 
 // Головна картинка товару
 const getProductImage = (product) => {

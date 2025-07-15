@@ -35,6 +35,7 @@ class Product extends Model
         'aroma',
         'pairing',
         'old_price',
+        'is_active',
     ];
     public function category()
     {

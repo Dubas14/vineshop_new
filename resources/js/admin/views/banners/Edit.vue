@@ -80,6 +80,7 @@ const loadBanner = async () => {
     try {
         const response = await axios.get(`/api/admin/banners/${route.params.id}`)
         form.value = response.data
+        form.value.is_active = !!form.value.is_active
         loaded.value = true
     } catch (error) {
         alert(t('banner_load_error'))
@@ -107,15 +108,17 @@ const handleImageChange = (e) => {
 }
 
 const handleSubmit = async () => {
-    const formData = new FormData()
-    formData.append('_method', 'PUT')
-
-    for (const key in form.value) {
-        formData.append(key, form.value[key])
-    }
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('title', form.value.title ?? '');
+    formData.append('subtitle', form.value.subtitle ?? '');
+    formData.append('link_type', form.value.link_type ?? '');
+    formData.append('link_target', form.value.link_target ?? '');
+    formData.append('button_text', form.value.button_text ?? '');
+    formData.append('is_active', form.value.is_active ? 1 : 0);
 
     if (imageFile.value) {
-        formData.append('image', imageFile.value)
+        formData.append('image', imageFile.value);
     }
 
     try {
@@ -123,14 +126,13 @@ const handleSubmit = async () => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
-        })
-        alert(t('banner_updated'))
-        router.push({ name: 'banners' })
+        });
+        alert(t('banner_updated'));
+        router.push({ name: 'banners' });
     } catch (e) {
-        alert(t('banner_update_error'))
-        console.error(e)
+        alert(t('banner_update_error'));
+        console.error(e);
     }
 }
-
 onMounted(loadBanner)
 </script>

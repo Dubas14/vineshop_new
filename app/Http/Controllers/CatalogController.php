@@ -10,10 +10,10 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('images');
+        $query = Product::with('images')
+            ->where('is_active', true);
         $category = null;
 
-        // Фільтрація за категорією через slug (як раніше)
         if ($request->has('category')) {
             $category = Category::with('children')->where('slug', $request->category)->first();
 
@@ -63,6 +63,7 @@ class CatalogController extends Controller
         $categoryIds = $this->getAllCategoryIds($category);
         $products = Product::with('images')
             ->whereIn('category_id', $categoryIds)
+            ->where('is_active', true)
             ->latest()
             ->paginate(12);
 

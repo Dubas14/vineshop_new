@@ -55,6 +55,7 @@ Route::post('/products/import/preview', [ProductImportController::class, 'previe
 Route::post('/products/import/process', [ProductImportController::class, 'import']);
 Route::post('/admin/product-images/import', [ProductImageImportController::class, 'import'])
     ->name('admin.product-images.import');
+Route::patch('admin/products/{product}/toggle-active', [ProductController::class, 'toggleActive']);
 
 // Cart routes
 Route::middleware('web')->group(function () {

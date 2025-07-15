@@ -163,6 +163,15 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Головне зображення видалено']);
     }
+    public function toggleActive(Request $request, Product $product)
+    {
+        $request->validate([
+            'is_active' => 'required|boolean',
+        ]);
+        $product->is_active = $request->is_active;
+        $product->save();
+        return response()->json(['success' => true]);
+    }
 
     public function destroyGalleryImage(ProductImage $image)
     {

@@ -10,6 +10,7 @@ class ProductController extends Controller
     {
         $product = Product::with('category', 'images')
             ->where('slug', $slug)
+            ->where('is_active', true) // <--- Додаємо цю умову!
             ->firstOrFail();
         return view('pages.product', compact('product'));
     }
