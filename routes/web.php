@@ -31,6 +31,8 @@ Route::get('/catalog/category/{id}', [CatalogController::class, 'byCategory'])->
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/contacts', 'pages.contacts')->name('contacts');
+Route::get('/search/autocomplete', [\App\Http\Controllers\SearchController::class, 'autocomplete']);
+
 
 // --- Кошик ---
 

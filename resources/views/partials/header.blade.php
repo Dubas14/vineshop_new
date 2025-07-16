@@ -18,8 +18,16 @@
         </button>
 
         {{-- Десктоп меню --}}
-        <nav class="hidden md:flex space-x-4 items-center">
-            <x-header-links :categories="$categories" :count="$count" />
+        <nav class="hidden md:flex items-center gap-6 w-full">
+            {{-- Пошук відразу після логотипу --}}
+            <div id="vue-search" class="w-96 ml-6">
+                <search-autocomplete></search-autocomplete>
+            </div>
+
+            {{-- Меню далі --}}
+            <div class="ml-auto flex items-center gap-4">
+                <x-header-links :categories="$categories" :count="$count" />
+            </div>
         </nav>
     </div>
 
