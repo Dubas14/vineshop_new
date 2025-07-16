@@ -5,6 +5,7 @@
             <input
                 v-model="form[field.key]"
                 :type="field.type"
+                :step="field.step"
                 class="w-full px-4 py-2 border border-gray-300 rounded-md"
             />
         </div>
@@ -26,11 +27,11 @@ const fields = [
     { key: 'package_type', label: 'package_type', type: 'text' },
     { key: 'color', label: 'color', type: 'text' },
     { key: 'sugar_content', label: 'sugar_content', type: 'text' },
-    { key: 'volume', label: 'volume', type: 'number' },
+    { key: 'volume', label: 'volume', type: 'number', step: 0.01 },
     { key: 'sort', label: 'sort', type: 'text' },
     { key: 'taste', label: 'taste', type: 'text' },
     { key: 'aroma', label: 'aroma', type: 'text' },
     { key: 'pairing', label: 'pairing', type: 'text' },
-    { key: 'old_price', label: 'old_price', type: 'number' }
+    { key: 'old_price', label: 'old_price', type: 'number', step: 0.01 }
 ]
 </script>
